@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>计算属性购物车</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+
+<body>
+    <div id="app">
+        <table border="1" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" v-model="selectall">
+                        <span>{{headers[0]}}</span>
+                    </th>
+                    <th>{{headers[1]}}</th>
+                    <th>{{headers[2]}}</th>
+                    <th>{{headers[3]}}</th>
+                    <th>{{headers[4]}}</th>
+                    <th>{{headers[5]}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for='(body,index) in bodys'>
+                    <td>
+                        <input type="checkbox" v-model="body.checked">
+                    </td>
+                    <td>
+                        <img v-bind:src='body.src'>
+                        <a>{{body.name}}</a>
+                    </td>
+                    <td>{{body.price}}</td>
+                    <td>
+                        <button type="button" v-on:click='less(index)'>-</button>
+                        <span>{{body.count}}</span>
+                        <button type="button" v-on:click='plus(index)'>+</button>
+                    </td>
+                    <td>{{body.price*body.count}}</td>
+                    <td>
+                        <button type="button" v-on:click='delect(index)'>del</button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>
+                        <img>
+
+                        <span>{{checkednumber}}</span>
+                        <span>件商品</span>
+                        <span>￥{{totalprice}}</span>
+                        <button type="button">去结算</button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                //checked: false,
+                headers: ['全选', '商品', '单价', '数量', '金额', '操作'],
+                bodys: [
+                    {
+                        src: 'plugin_icon_qq_portal.png',
+                        name: '123',//商品名称
+                        price: '2',//单价
+                        count: '1',//数量
+                        checked: false
+                    },
+                    {
+                        src: 'plugin_icon_qq_portal.png',
+                        name: '321',//商品名称
+                        price: '2',//单价
+                        count: '1',//数量
+                        checked: false
+                    },
+                    {
+                        src: 'plugin_icon_qq_portal.png',
+                        name: '456',//商品名称
+                        price: '2',//单价
+                        count: '1',//数量
+                        checked: false
+                    }
+                ]
+            },
+            computed: {
+                selectall: {
+                    get: function () {
+                        return this.checkednumber === this.bodys.length;
+                    },
+                    set: function (v) {//返回父级全选框的状态
+                        for (var i = 0; i < this.bodys.length; i++) {
+                            this.bodys[i].checked = v
+                        }
+                        return v;
+                    }
+                },
+                checkednumber: {
+                    get: function () {
+                        var a = 0;
+                        for (var i = 0; i < this.bodys.length; i++) {
+                            if (this.bodys[i].checked === true) {
+                                a++
+                            }
+                        }
+                        return a;
+                    }
+                },
+                totalprice: function () {//for循环写法
+                    var all = 0;
+                    for (var i = 0; i < this.bodys.length; i++) {
+                        if (this.bodys[i].checked === true) {
+                            all = all + this.bodys[i].price * this.bodys[i].count;
+                        }
+                    }
+                    return all;
+                }
+            },
+            methods: {
+                plus: function (index) {//增加商品数量
+                    this.bodys[index].count++
+                },
+                less: function (index) {//减去商品数量
+                    if (this.bodys[index].count > 1) {
+                        this.bodys[index].count--
+                    }
+                    else {
+                        return
+                    }
+                },
+                delect: function (index) {//删除商品
+                    this.bodys.splice(index, 1)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

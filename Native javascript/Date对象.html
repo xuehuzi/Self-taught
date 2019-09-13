@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script>
+    window.onload = function () {
+        function showtime() {
+            var showtime = document.getElementById('showtime');
+            var date = new Date();
+            var date_year = date.getFullYear();
+            var date_month = date.getMonth() + 1;
+            var date_date = date.getDate();
+            var date_day = date.getDay();
+            var date_hours = date.getHours();
+            var date_minutes = date.getMinutes();
+            var date_seconds = date.getSeconds();
+            var Aarry = new Array(7);
+            Aarry[0] = '周一';
+            Aarry[1] = '周二';
+            Aarry[2] = '周三';
+            Aarry[3] = '周四';
+            Aarry[4] = '周五';
+            Aarry[5] = '周六';
+            Aarry[6] = '周日';
+            function cheek_time(cheek) {
+                if (cheek <= 9) {
+                    cheek = '0' + cheek
+                }
+                return cheek
+            }
+
+            cheek_time(date_hours);
+            cheek_time(date_minutes);
+            cheek_time(date_seconds);
+
+            showtime.innerHTML = date_year + '年' + date_month + '月' + date_date+'日' + Aarry[date_day] + cheek_time(date_hours) + ':' + cheek_time(date_minutes) + ':' + cheek_time(date_seconds);
+        }
+
+        setInterval(showtime, 500);
+
+
+        function time_difference() {
+            var timeline = document.getElementById('timeline');
+            var endtime = new Date(2017, 9, 22, 21, 0, 0);
+            var startime = new Date();
+            var time_difference = Math.floor((endtime.getTime() - startime.getTime()) / 1000);//计算相差的秒数
+            var time_difference_day = Math.floor(time_difference /3600/24);//计算相差天数
+            var time_difference_hour = Math.floor((time_difference / 3600) % 24);//小时
+            var time_difference_minutes = Math.floor((time_difference / 60) % 60);//分钟
+            var time_difference_second = Math.floor((time_difference % 60)+1);//秒***不加1会出现显示0秒
+            if (time_difference >= 1) {
+                timeline.innerHTML = '距离开始时间还有'+ time_difference_day + '天' + time_difference_hour + '小时' + time_difference_minutes + '分' + time_difference_second + '秒'
+            }
+            else {
+                timeline.innerHTML = '开抢';
+            }
+        }
+
+        setInterval(time_difference, 500);
+
+
+    };
+
+
+</script>
+
+<div class="content">
+    <div id="showtime"></div>
+    <div id="timeline"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>抽奖</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #body_Luck_draw {
+            height: 200px;
+            width: 500px;
+            margin: 0 auto;
+            cursor: pointer;
+            color: orangered;
+            background-color: #0d5353;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 10px;
+            box-shadow: 0 0 8px #000;
+        }
+
+        #text_p {
+            margin: 30px 0 30px 0;
+            padding-top: 30px;
+            text-align: center;
+            font-size: 25px;
+        }
+
+        #text_value {
+            display: block;
+            margin: 0 auto;
+            text-align: center;
+            height: 25px;
+            width: 170px;
+        }
+
+        #button_div {
+            width: 175px;
+            margin: 0 auto;
+        }
+
+        #star_btn, #stop_btn {
+            height: 30px;
+            width: 85px;
+            margin: 10px 0 30px 0;
+        }
+
+        #div_body {
+            width: 640px;
+            height: 640px;
+        }
+
+        #zhuanpan {
+            position: absolute;
+            left: calc(50% - 320px);
+            /* top: calc(50% - 320px); */
+            width: 640px;
+            height: 640px;
+            background: url('./img/lotteryContent.png') no-repeat;
+        }
+
+        #zhizhen {
+            background: url('./img/lotteryBtn.png') no-repeat;
+            width: 252px;
+            height: 252px;
+            position: absolute;
+            left: calc(50% - 126px);
+            top: calc(50% - 126px);
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="div_body">
+    <div id="zhuanpan">
+        <div id="zhizhen">
+        </div>
+    </div>
+</div>
+<div id="body_Luck_draw">
+    <p id="text_p">点击开始或回车</p>
+    <input type="text" value="" id="text_value" placeholder="">
+    <div id="button_div">
+        <button type="button" id="star_btn">开始抽奖</button>
+        <button type="button" id="stop_btn">停止抽奖</button>
+    </div>
+</div>
+
+<script>
+    window.onload = function () {
+        var text_p = document.getElementById('text_p');
+        var star_btn = document.getElementById('star_btn');
+        var stop_btn = document.getElementById('stop_btn');
+        var text_value = document.getElementById('text_value');
+        var Arry = ['Phone5', 'Ipad', '三星笔记本', '佳能相机', '惠普打印机', '谢谢参与', '50元充值卡', '1000元超市购物券'];
+        var Arrt_timer = null;
+        var key_flag = 0;
+        stop_btn.disabled = 'true';
+
+        function btn(click_type) {
+            if (click_type.onclick) {
+                if (click_type === star_btn) {
+                    star_btn.disabled = 'true';
+                    stop_btn.disabled = '';
+                    Luck_draw();
+                    text_value.value = '';
+                    key_flag = 1;
+                }
+                if (click_type === stop_btn) {
+                    key_flag = 0;
+                    clearInterval(Arrt_timer);
+                    text_value.value = '恭喜获得' + '"' + text_p.innerHTML + '"';
+                    if (stop_btn.disabled === '' && star_btn.disabled === '') {
+                        stop_btn.disabled = ''
+                    }
+                    else {
+                        stop_btn.disabled = 'true';
+                        star_btn.disabled = '';
+                    }
+                }
+            }
+        }
+
+        document.onkeyup = function (key_Code) {
+            if (key_Code.keyCode === 13) {
+                if (key_flag === 0) {
+                    btn(star_btn);
+                    key_flag = 1;
+                }
+                else {
+                    btn(stop_btn);
+                    key_flag = 0;
+                }
+            }
+        };
+
+        function Luck_draw() {
+            clearInterval(Arrt_timer);
+            Arrt_timer = setInterval(
+                function () {
+                    text_p.innerHTML = Arry[Math.floor(Math.random() * Arry.length)];
+                }, 50);
+
+        }
+
+        star_btn.onclick = function () {
+            btn(star_btn);
+        };
+        stop_btn.onclick = function () {
+            btn(stop_btn);
+        };
+        ///////////////////////////////////////////////////转盘抽奖//////////////////////////////////////////////////////////
+        var prize_arry = [
+            {name: '10M流量', Stock: 10, chance: 385},
+            {name: 'iPhone7', Stock: 10, chance: 285},
+            {name: '30M流量', Stock: 10, chance: 184},
+            {name: '5元话费', Stock: 10, chance: 83},
+            {name: 'ipad mini 4', Stock: 10, chance: 52},
+            {name: '20元话费', Stock: 10, chance: 11}
+        ];
+        var zhizhen = document.getElementById('zhizhen');//指针
+        var huanchong_timer = null;
+        var huojiang_jiaodu = null;
+        var move_flg = false;
+        var frequency = 3;//可抽奖次数
+        var prize_title = null;//获奖名称
+
+        zhizhen.onclick = function () {
+            if (frequency === 0 && move_flg === false) {//抽奖次数是否用完
+                alert('次数用完');
+                return;
+            }
+            if (move_flg === false) {//是否正在转动
+                frequency--;
+                //var winning = Math.floor((Math.random() * prize_arry.length + 1));//随机获取奖品
+                huojiang_jiaodu = (huojiang_jiaodu + 360 / prize_arry.length * random_prize(prize_arry)) + 4 * 360;//获取奖品的度数,加一次huojiang_jiaodu表示保存上次指针的位置
+                prize_title = prize_arry[(huojiang_jiaodu - parseInt(huojiang_jiaodu / 360) * 360) / 60].name;//指针最后停止的角度（即奖品的度数）;huojiang_jiaodu/360得到的度数再parseInt取整再*360表示转的完整圈数，huojiang_jiaodu再减去取整后的度数就是指针最后走过的度数
+                console.log(huojiang_jiaodu);
+                huanchong_move(zhizhen, huojiang_jiaodu, prize_title);
+            }
+        };
+
+
+        function huanchong_move(type, huanchong_juli, prize_name) {
+            if (move_flg === true) {//如果正在旋转状态则不继续执行，等待前一次执行完
+                return;
+            }
+            move_flg = true;
+            huanchong_timer = setInterval(function () {
+                yizou = Number(type.style.transform.replace(/[^0-9]/ig, ""));
+                var sudu = (huanchong_juli - yizou) / 50;
+                if (sudu > 0) {
+                    sudu = Math.ceil(sudu);
+                }
+                if (yizou === huanchong_juli) {
+                    move_flg = false;
+                    clearInterval(huanchong_timer);
+                    alert(prize_name);
+                }
+                else {
+                    type.style.transform = 'rotate(' + (yizou + sudu) + 'deg)';
+                }
+            }, 30)
+        }//封装指针动画
+
+        function random_prize(type) {
+            var sum = null;
+            for (var x = 0; x < type.length; x++) {//计算获奖概率总和
+                sum = sum + type[x].chance
+            }
+            for (var i = 0; i < type.length; i++) {
+                random_num = Math.floor((Math.random() * sum + 1));//获取 0-chance总和之间的一个随随机整数
+                if (random_num <= type[i].chance) {//如果奖品的chance大于等于随机数random_num，则返回该chance在数组内对应的下标
+                    return i;//返回对应奖品的下标
+                }
+                else {
+                    sum -= type[i].chance;//否则减去当前的概率范围,进入下一轮循环
+                }
+
+            }
+        }
+
+    }
+</script>
+</body>
+</html>
