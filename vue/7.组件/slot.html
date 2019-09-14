@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>slot</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <style>
+        .content {
+            margin: 30px auto;
+            max-width: 480px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        .myclass {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.7;
+            transition: all .6s;
+        }
+
+        .popupbodyclass {
+            position: fixed;
+            width: 450px;
+            height: 400px;
+            left: calc(50% - 200px);
+            bottom: calc(50% - 200px);
+
+        }
+
+        .popupheaderclass {
+            width: 450px;
+            height: 50px;
+            background-color: white;
+            text-align: center;
+            line-height: 50px;
+            position: absolute;
+        }
+
+        .popupcloseclass {
+            width: 20px;
+            height: 20px;
+            background-color: crimson;
+            border-radius: 50%;
+            float: right;
+        }
+
+        .popupminclass {
+            position: absolute;
+            top: 50px;
+            width: 450px;
+            height: 350px;
+            background-color: chartreuse;
+            text-align: center;
+        }
+
+        .popupfooterclass {
+            position: absolute;
+            left: calc(50% - 15px);
+            bottom: 30px;
+        }
+
+
+
+
+        .myclass1 {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.7;
+            transition: all .6s;
+        }
+
+        .popupbodyclass1 {
+            position: fixed;
+            width: 450px;
+            height: 400px;
+            left: calc(50% - 200px);
+            bottom: calc(50% - 200px);
+
+        }
+
+        .popupheaderclass1 {
+            width: 450px;
+            height: 50px;
+            background-color: white;
+            text-align: center;
+            line-height: 50px;
+            position: absolute;
+        }
+
+        .popupcloseclass1 {
+            width: 20px;
+            height: 20px;
+            background-color: crimson;
+            border-radius: 50%;
+            float: right;
+        }
+
+        .popupminclass1 {
+            position: absolute;
+            top: 50px;
+            width: 450px;
+            height: 350px;
+            background-color: chartreuse;
+            text-align: center;
+        }
+
+        .popupfooterclass1 {
+            position: absolute;
+            left: calc(50% - 15px);
+            bottom: 30px;
+        }
+        /*  */
+        .tabstyle{
+            color: crimson;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h4>说明</h4>
+        <h4>总的来说就是：插槽即slot，是组件的一块HTML模板，这块模板显示不显示、以及怎样显示由父组件来决定插槽
+            <br/>显示与隐藏，以及用什么样的html标签都由父组件控制;但插槽显示的位置由子组件自身决定标签嵌套关系 slot写
+            <br/>在组件template的哪块，父组件传过来的模板将来就显示在哪块</h4>
+        <ul>
+            <li>
+                <p>当需要让组件组合使用，混合父组件的内容与子组件的模板时，就会用到slot这个过程叫作内容分发它有以下特点</p>
+                <p>· 组件不知道它的挂载点会有什么内容。挂载点的内容是由＜app＞的父组件决定的</p>
+                <p>· 单个插槽可以放置在组件的任意位置，但是就像它的名字一样，一个组件中只能有一个该类插槽</p>
+                <p>· 具名插槽可以在一个组件中出现N次。出现在不同的位置，只要名字（name属性）不同就可以</p>
+            </li>
+            <li>props传递数据、events触发事件和slot内容分发就构成了Vue组件的3个API来源，再复杂的组件也是由这3部分构成的。</li>
+        </ul>
+    </div>
+    <fieldset>
+        <legend>插槽作用域</legend>
+        <h4>实例1：插槽作用域（父组件/实例内编译）</h4>
+        <div id="app1">
+            <child-componet v-show="showChild"></child-componet>
+        </div>
+        <template id="t1-1">
+            <div>子组件1</div>
+        </template>
+        <h4>实例2：插槽作用域（子组件内编译）</h4>
+        <div id="app2">
+            <child-componet></child-componet>
+        </div>
+        <template id="t2-1">
+            <div v-show="showChild">子组件2</div>
+        </template>
+        <pre>
+            作用域说明：父组件模板的内容是在父组件作用域内编译，子组件模板的内容是在子组件作用域内编译
+            实例说明：
+            1、实例app1的v-show="showChild"虽然是在子组件上绑定的，但该子组件已经嵌套在父实例app1内
+            2、父实例和子组件内都改变showChild的值，但只有父实例才会生效，因为v-show="showChild"作用域在父实例内
+            3、同理app2的v-show="showChild"，绑定在子组件div上，虽然该子组件嵌套在父实例内，但v-show="showChild"
+               是绑定在了子组件内
+            4、所以在实例app2的data内修改showChild的状态是无效的，必须在子组件的data内return出来
+            &lt;div id=&quot;app1&quot;&gt;
+                &lt;child-componet v-show=&quot;showChild&quot;&gt;&lt;/child-componet&gt;
+            &lt;/div&gt;
+            &lt;template id=&quot;t1-1&quot;&gt;
+                &lt;div&gt;子组件1&lt;/div&gt;
+            &lt;/template&gt;
+            var app1 = new Vue({
+                el: &#x27;#app1&#x27;,
+                data: {
+                    showChild: true
+                },
+                components: {
+                    &#x27;child-componet&#x27;: {
+                        template: &#x27;#t1-1&#x27;,
+                        data: function () {
+                            return {
+                                showChild: true
+                            }
+                        }
+                    }
+                }
+            })
+            
+            &lt;div id=&quot;app2&quot;&gt;
+                &lt;child-componet&gt;&lt;/child-componet&gt;
+            &lt;/div&gt;
+            &lt;template id=&quot;t2-1&quot;&gt;
+                &lt;div v-show=&quot;showChild&quot;&gt;子组件2&lt;/div&gt;
+            &lt;/template&gt;
+            var app2 = new Vue({
+                el: &#x27;#app2&#x27;,
+                data: {
+                    showChild: true
+                },
+                components: {
+                    &#x27;child-componet&#x27;: {
+                        template: &#x27;#t2-1&#x27;,
+                        data: function () {
+                            return {
+                                showChild: true
+                            }
+                        }
+                    }
+                }
+            })
+        </pre>
+    </fieldset>
+    <fieldset>
+        <legend>单个/多个插槽</legend>
+        <h4>实例3：单个插槽</h4>
+        <ul>
+            <li>在子组件内使用特殊的slot元素就可以为这个子组件开启一个 slot （插槽）</li>
+            <li>slot相当于子组件设置了一个插槽，父组件/实例可以往子组件的这个插槽中放内容</li>
+            <li>当子组件有slot且父组件在插槽内放了标签，则显示父组件放的标签；如果父组件没放标签则显示slot默认的内容</li>
+            <li>当子组件中没有slot时，父组件放在子组件标签内的标签不会渲染</li>
+        </ul>
+        <div id="app3">
+            <my-component3>
+                <h1>Hello Vue.js!</h1>
+            </my-component3>
+            <my-component3></my-component3>
+        </div>
+        <template id="t3">
+            <div class="content">
+                <slot>如果没有分发内容，则显示slot中的内容</slot>
+                <p>Say something...</p>
+            </div>
+        </template>
+        <pre>
+            实例说明：
+            1、子组件在实例app3中分别调用了两次，区别是一个加加了h1标签一个没加
+            2、h1标签会替代子组件solt标签及其内容并渲染
+            3、没加h1标签时，会直接将子组件slot标签的内容渲染出来
+            &lt;div id=&quot;app3&quot;&gt;
+                &lt;my-component3&gt;
+                    &lt;h1&gt;Hello Vue.js!&lt;/h1&gt;
+                &lt;/my-component3&gt;
+                &lt;my-component3&gt;&lt;/my-component3&gt;
+            &lt;/div&gt;
+            &lt;template id=&quot;t3&quot;&gt;
+            &lt;div class=&quot;content&quot;&gt;
+                &lt;slot&gt;如果没有分发内容，则显示slot中的内容&lt;/slot&gt;
+                &lt;p&gt;Say something...&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;/template&gt;
+            </pre>
+        <h4>实例4：多个插槽（具名slot）</h4>
+        <ul>
+            <li>当有多个插槽时，vue给slot提供了一个name属性，可以定义除默认插槽以外的其他插槽</li>
+            <li>当给slot提供了name属性后，这样可以将父组件中slot位置，和子组件slot元素产生关联，便于插槽内容对应传递</li>
+        </ul>
+        <div id="app4">
+            <my-component4>
+                <h1 slot='header'>header</h1>
+                <p slot='body'>body</p>
+                <p slot='body'>body</p>
+            </my-component4>
+            <my-component4></my-component4>
+        </div>
+        <template id="t4">
+            <div class="content">
+                <slot name='header'></slot>
+                <slot name='body'></slot>
+                <h2>多个插槽</h2>
+            </div>
+        </template>
+        <pre>
+        实例说明：
+        1、子组件t4内有两个slot标签，其name属性分别是header和body以及一个h2标签
+        2、实例app4调用了两次子组件my-component4，区别是一个在子组件内加了h1和p标签(和子组件slot的name属性对应)，一个没有加任何标签
+        3、渲染后加标签的会将其渲染出来，没加的话不会渲染
+        <pre>
+        &lt;div id=&quot;app4&quot;&gt;
+            &lt;my-component4&gt;
+                &lt;h1 slot=&#x27;header&#x27;&gt;header&lt;/h1&gt;
+                &lt;p slot=&#x27;body&#x27;&gt;body&lt;/p&gt;
+                &lt;p slot=&#x27;body&#x27;&gt;body&lt;/p&gt;
+            &lt;/my-component4&gt;
+            &lt;my-component4&gt;&lt;/my-component4&gt;
+        &lt;/div&gt;
+        &lt;template id=&quot;t4&quot;&gt;
+            &lt;div class=&quot;content&quot;&gt;
+                &lt;slot name=&#x27;header&#x27;&gt;&lt;/slot&gt;
+                &lt;slot name=&#x27;body&#x27;&gt;&lt;/slot&gt;
+                &lt;h2&gt;多个插槽&lt;/h2&gt;
+            &lt;/div&gt;
+        &lt;/template&gt;
+        </pre>
+        </pre>
+    </fieldset>
+    <fieldset>
+        <legend>作用域插槽</legend>
+        <h4>实例5：作用域插槽</h4>
+        <div id="app5">
+            <my-component5>
+                <template slot-scope="person">
+                    <span>{{person.personname}}</span>
+                    <span>{{person.personage}}</span>
+                </template>
+            </my-component5>
+        </div>
+        <template id="t5">
+            <div>
+                <slot :personname="name" :personage="age"></slot>
+            </div>
+        </template>
+        <h4>作用域插槽理解</h4>
+        <ul>
+            <li>单个插槽和具名插槽其插槽内的标签、标签的样式、标签的内容，都是由父组件决定的（显示与否及样式），但插槽显示的位置（标签嵌套关系）
+                <br/>由子组件自身决定
+            </li>
+            <li>而作用域插槽（在slot上面绑定数据），父组件只需要提供标签、标签的样式（作用域插槽绑定的数据的前提下）不用再提供标签的内容
+                <br/>插槽显示的位置（标签嵌套关系）以及要显示的内容，都由子组件自身决定
+            </li>
+            <li>使用作用域插槽时，父组件需加一个template元素，然后父组件才能通过slot-scope特性访问子组件数据
+                <pre>
+                &lt;div id=&quot;app5&quot;&gt;
+                    &lt;my-component5&gt;
+                        &lt;template slot-scope=&quot;person&quot;&gt;&lt;/template&gt;
+                    &lt;/my-component5&gt;
+                &lt;/div&gt;
+                </pre>
+            </li>
+            <li>实例说明：</li>
+            <p>1、子组件的slot上绑定了person对象的两个属性personname和personage，且子组件data内返回personname和personage的数据</p>
+            <p>2、父组件在调用子组件时，加了一个template元素，并且再该template元素上通过slot-scope属性绑定了person对象；slot-scope="person"</p>
+            <p>3、同上面的实例对比，该实例的父组件并没有提供数据，渲染出的数据都是从子组件的</p>
+            <pre>
+            &lt;div id=&quot;app5&quot;&gt;
+                &lt;my-component5&gt;
+                &lt;template slot-scope=&quot;person&quot;&gt;
+                    &lt;span&gt;{{person.personname}}&lt;/span&gt;
+                    &lt;span&gt;{{person.personage}}&lt;/span&gt;
+                &lt;/template&gt;
+                &lt;/my-component5&gt;
+            &lt;/div&gt;
+            &lt;template id=&quot;t5&quot;&gt;
+                &lt;div&gt;
+                    &lt;slot :personname=&quot;name&quot; :personage=&quot;age&quot;&gt;&lt;/slot&gt;
+                &lt;/div&gt;
+            &lt;/template&gt;
+    
+            var app5 = new Vue({
+                el: &#x27;#app5&#x27;,
+                components: {
+                    &#x27;my-component5&#x27;: {
+                        template: &#x27;#t5&#x27;,
+                        data() {
+                            return {
+                                name: &#x27;zhangsan&#x27;,
+                                age: &#x27;18&#x27;
+                            }
+                        }
+                    }
+                }
+            })
+            </pre>
+        </ul>
+    </fieldset>
+    <!--  -->
+    <fieldset>
+        <legend>动态组件</legend>
+        <h4>实例6：动态组件</h4>
+        <div id='app6'>
+            <button v-on:click="handleChangeView('1')">切换到 A</button>
+            <button v-on:click="handleChangeView('2')">切换到 B</button>
+            <button v-on:click="handleChangeView('3')">切换到 C</button>
+            <component :is='currentView'></component>
+        </div>
+        <template id="t6-1">
+            <div>组件A</div>
+        </template>
+        <template id="t6-2">
+            <div>组件B</div>
+        </template>
+        <template id="t6-3">
+            <div>组件C</div>
+        </template>
+        <div id="app7">
+            <button v-on:click="changeShow">change show</button>
+            <component v-bind:is="show"></component>
+        </div>
+        <template id="t7-1">
+            <div>1</div>
+        </template>
+        <template id="t7-2">
+            <div>2</div>
+        </template>
+        <template id="t7-3">
+            <div>3</div>
+        </template>
+        <div id="app8">
+            <button type="button" v-for='(list,index) in lists' v-on:click='myclick(list,index)' v-bind:class='{tabstyle:index === tabclass_num}'>{{list}}</button>
+            <component v-bind:is="show"></component>
+        </div>
+        <template id="t8-1">
+            <div>1</div>
+        </template>
+        <template id="t8-2">
+            <div>2</div>
+        </template>
+        <template id="t8-3">
+            <div>3</div>
+        </template>
+        <pre>
+        说明：多个组件使用同一个挂载点，并动态切换显示某个或都不显示，这就是动态组件
+        1、动态组件挂载点通过 component 元素动态地绑定到它的 is 特性来实现
+        2、挂载点必须使用 component 标签，通过v-bind绑定component标签的is属性，该属性的值就是要显示的组件，该属性可以，
+           直接是要显示的组件名也可以是对象，可经过计算后再返回该对象，&lt;component v-bind:is=&#x27;组件名&#x27;&gt;&lt;/component&gt;
+        3、动态切换掉的组件（非当前显示的组件）是直接删除的，如果想保留它的状态或避免重新渲染，可通过keep-alive标签来包裹component标签实现不用重新渲染
+        实例说明：
+        1、注册了3个组件分别是t8-1到t8-3
+        2、三个组件的全部挂载到实例app8的component标签内，component标签通过v-bind绑定了component的is属性，绑定值是一个对象show
+        3、将三个组件的标签名，当作lists的参数lists:[&#x27;tab-componet1&#x27;, &#x27;tab-componet2&#x27;, &#x27;tab-componet3&#x27;]
+        4、默认情况show的值是tab-componet1，点击按钮后根据show的值判断该显示那个组件
+        5、myclick函数传了两个参数list和index，this.show = lsit意思是将当前所点击的组件的标签名赋值给show，即选择当前点击的标签
+        &lt;div id=&quot;app8&quot;&gt;
+            &lt;button type=&quot;button&quot; v-for=&#x27;(list,index) in lists&#x27; v-on:click=&#x27;myclick(list,index)&#x27; v-bind:class=&#x27;{style_1:index === tabclass_num}&#x27;&gt;{{list}}&lt;/button&gt;
+            &lt;component v-bind:is=&quot;show&quot;&gt;&lt;/component&gt;
+        &lt;/div&gt;
+        &lt;template id=&quot;t8-1&quot;&gt;
+            &lt;div&gt;1&lt;/div&gt;
+        &lt;/template&gt;
+        &lt;template id=&quot;t8-2&quot;&gt;
+            &lt;div&gt;2&lt;/div&gt;
+        &lt;/template&gt;
+        &lt;template id=&quot;t8-3&quot;&gt;
+            &lt;div&gt;3&lt;/div&gt;
+        &lt;/template&gt;
+        var app8 = new Vue({
+            el: &#x27;#app8&#x27;,
+            data: {
+                show: &#x27;tab-componet1&#x27;,
+                tabclass_num: 0,
+                lists: [&#x27;tab-componet1&#x27;, &#x27;tab-componet2&#x27;, &#x27;tab-componet3&#x27;]
+            },
+            methods: {
+                myclick: function (lsit, index) {
+                    this.show = lsit
+                    this.tabclass_num = index
+                }
+            },
+            components: {
+                &#x27;tab-componet1&#x27;: {
+                    template: &#x27;#t8-1&#x27;
+                },
+                &#x27;tab-componet2&#x27;: {
+                    template: &#x27;#t8-2&#x27;
+                },
+                &#x27;tab-componet3&#x27;: {
+                    template: &#x27;#t8-3&#x27;
+                }
+            }
+        })
+        </pre>
+    </fieldset>
+    <!--  -->
+    <fieldset>
+        <legend>Slot实例</legend>
+        <div id="app51">
+            <button type="button" v-on:click='myclick'>123456789</button>
+            <myslot-component>
+                <div :class="{myclass:myclassflg}" slot='zhezhao'></div>
+                <div slot='popupbody' :class="{popupbodyclass:popupbodyclassflg}" v-if="bodyshow">
+                    <div slot='popupheader' :class="{popupheaderclass:popupheaderclassflg}">
+                        <span v-if='show'>标题</span>
+                        <div slot='popupclose' :class="{popupcloseclass:popupcloseclassflg}" v-on:click='close'></div>
+                    </div>
+                    <div slot='popupmin' :class="{popupminclass:popupminclassflg}">
+                        <p v-if='show1'>123123123123123123</p>
+                    </div>
+                    <div slot='popupfooter' :class="{popupfooterclass:popupfooterclassflg}">
+                        <button type="button">enter</button>
+                    </div>
+                </div>
+            </myslot-component>
+        </div>
+        <div id="app61">
+            <button type="button" v-on:click='myclick1'>987654321</button>
+            <myslot-component>
+                <div :class="{myclass1:myclassflg1}" slot='zhezhao'></div>
+                <div slot='popupbody' :class="{popupbodyclass1:popupbodyclassflg1}" v-if="bodyshow1">
+                    <div slot='popupheader' :class="{popupheaderclass1:popupheaderclassflg1}">
+                        <span v-if='show1'>标题</span>
+                        <div slot='popupclose' :class="{popupcloseclass1:popupcloseclassflg1}" v-on:click='close1'></div>
+                    </div>
+                    <div slot='popupmin' :class="{popupminclass1:popupminclassflg1}">
+                        <p v-if='show11'>123123123123123123</p>
+                    </div>
+                    <!--<div slot='popupfooter' :class="{popupfooterclass1:popupfooterclassflg1}">
+                                <button type="button">enter</button>
+                            </div> -->
+                </div>
+            </myslot-component>
+        </div>
+        <template id="t56">
+            <div>
+                <slot name='zhezhao'></slot>
+                <!-- 遮罩 -->
+                <slot name='popupbody'>
+                    <!-- 弹出窗口body -->
+                    <slot name='popupheader'>
+                        <!-- head -->
+                        <slot name='popupclose'></slot>
+                    </slot>
+                    <slot name='popupmin'></slot>
+                    <!-- min -->
+                    <slot name='popupfooter'></slot>
+                    <!-- footer -->
+                </slot>
+            </div>
+        </template>
+        <pre>
+        说明：
+        1、组件t56内通过具名slot实现了一个弹出框，具体分为遮罩、弹出框（头部、关闭按钮、确定按钮、内容区）等几部分
+        2、两个vue实例app51和app61分别用组件t56实现各自的弹出框
+        3、区别是app61没有使用footer部分
+        
+        &lt;div id=&quot;app51&quot;&gt;
+        &lt;button type=&quot;button&quot; v-on:click=&#x27;myclick&#x27;&gt;123456789&lt;/button&gt;
+        &lt;myslot-component&gt;
+            &lt;div slot=&#x27;zhezhao&#x27;&gt;&lt;/div&gt;
+            &lt;div slot=&#x27;popupbody&#x27; v-if=&quot;bodyshow&quot;&gt;
+                &lt;div slot=&#x27;popupheader&#x27;&gt;
+                    &lt;span v-if=&#x27;show&#x27;&gt;标题&lt;/span&gt;
+                    &lt;div slot=&#x27;popupclose&#x27; v-on:click=&#x27;close&#x27;&gt;&lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div slot=&#x27;popupmin&#x27;&gt;
+                    &lt;p v-if=&#x27;show1&#x27;&gt;弹出框内容&lt;/p&gt;
+                &lt;/div&gt;
+                &lt;div slot=&#x27;popupfooter&#x27;&gt;
+                    &lt;button type=&quot;button&quot;&gt;enter&lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/myslot-component&gt;
+    &lt;/div&gt;
+    &lt;div id=&quot;app61&quot;&gt;
+        &lt;button type=&quot;button&quot; v-on:click=&#x27;myclick1&#x27;&gt;987654321&lt;/button&gt;
+        &lt;myslot-component&gt;
+            &lt;div slot=&#x27;zhezhao&#x27;&gt;&lt;/div&gt;
+            &lt;div slot=&#x27;popupbody&#x27;&gt;
+                &lt;div slot=&#x27;popupheader&#x27;&gt;
+                    &lt;span v-if=&#x27;show1&#x27;&gt;标题&lt;/span&gt;
+                    &lt;div slot=&#x27;popupclose&#x27; v-on:click=&#x27;close1&#x27;&gt;&lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div slot=&#x27;popupmin&#x27;&gt;
+                    &lt;p v-if=&#x27;show11&#x27;&gt;弹出框内容&lt;/p&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/myslot-component&gt;
+        &lt;template id=&quot;t56&quot;&gt;
+            &lt;div&gt;
+                &lt;slot name=&#x27;zhezhao&#x27;&gt;&lt;/slot&gt;
+                &lt;!-- 遮罩 --&gt;
+                &lt;slot name=&#x27;popupbody&#x27;&gt;
+                    &lt;!-- 弹出窗口body --&gt;
+                    &lt;slot name=&#x27;popupheader&#x27;&gt;
+                        &lt;!-- head --&gt;
+                        &lt;slot name=&#x27;popupclose&#x27;&gt;&lt;/slot&gt;
+                    &lt;/slot&gt;
+                    &lt;slot name=&#x27;popupmin&#x27;&gt;&lt;/slot&gt;
+                    &lt;!-- min --&gt;
+                    &lt;slot name=&#x27;popupfooter&#x27;&gt;&lt;/slot&gt;
+                    &lt;!-- footer --&gt;
+                &lt;/slot&gt;
+            &lt;/div&gt;
+        &lt;/template&gt;
+        </pre>
+    </fieldset>
+    <script>
+        var app1 = new Vue({
+            el: '#app1',
+            data: {
+                showChild: true
+            },
+            components: {
+                'child-componet': {
+                    template: '#t1-1',
+                    data: function () {
+                        return {
+                            showChild: true
+                        }
+                    }
+                }
+            }
+        })
+        var app2 = new Vue({
+            el: '#app2',
+            data: {
+                showChild: true
+            },
+            components: {
+                'child-componet': {
+                    template: '#t2-1',
+                    data: function () {
+                        return {
+                            showChild: true
+                        }
+                    }
+                }
+            }
+        })
+        var app3 = new Vue({
+            el: '#app3',
+            components: {
+                'my-component3': {
+                    template: '#t3'
+                }
+            }
+        })
+        var app4 = new Vue({
+            el: '#app4',
+            components: {
+                'my-component4': {
+                    template: '#t4'
+                }
+            }
+        })
+        var app5 = new Vue({
+            el: '#app5',
+            components: {
+                'my-component5': {
+                    template: '#t5',
+                    data() {
+                        return {
+                            name: '张三',
+                            age: '18'
+                        }
+                    }
+                }
+            }
+        })
+        var app6 = new Vue({
+            el: '#app6',
+            data: {
+                currentView: 'child-componet1'
+            },
+            components: {
+                'child-componet1': {
+                    template: '#t6-1'
+                },
+                'child-componet2': {
+                    template: '#t6-2'
+                },
+                'child-componet3': {
+                    template: '#t6-3'
+                }
+            },
+            methods: {
+                handleChangeView: function (value) {
+                    this.currentView = 'child-componet' + value
+                }
+            }
+        })
+        ///////////////////////
+        var app7 = new Vue({
+            el: '#app7',
+            data: {
+                show: 'child-componet1'
+            },
+            components: {
+                'child-componet1': {
+                    template: '#t7-1'
+                },
+                'child-componet2': {
+                    template: '#t7-2'
+                },
+                'child-componet3': {
+                    template: '#t7-3'
+                }
+            },
+            methods: {
+                changeShow: function () {
+                    if (this.show == 'child-componet1') {
+                        this.show = 'child-componet2'
+                    } else if (this.show == 'child-componet2') {
+                        this.show = 'child-componet3'
+                    } else {
+                        this.show = 'child-componet1'
+                    }
+                }
+            }
+        })
+        var app8 = new Vue({
+            el: '#app8',
+            data: {
+                show: 'tab-componet1',
+                tabclass_num: 0,
+                lists: ['tab-componet1', 'tab-componet2', 'tab-componet3']
+            },
+            methods: {
+                myclick: function (lsit, index) {
+                    this.show = lsit
+                    this.tabclass_num = index
+                }
+            },
+            components: {
+                'tab-componet1': {
+                    template: '#t8-1'
+                },
+                'tab-componet2': {
+                    template: '#t8-2'
+                },
+                'tab-componet3': {
+                    template: '#t8-3'
+                }
+            },
+        })
+
+
+
+
+        var app51 = new Vue({
+            el: '#app51',
+            data: {
+                ourclassflg: true,
+                myclassflg: false,
+                popupbodyclassflg: true,
+                popupheaderclassflg: true,
+                popupcloseclassflg: true,
+                show: true,
+                show1: true,
+                popupminclassflg: true,
+                bodyshow: false,
+                popupfooterclassflg: true
+            },
+            methods: {
+                myclick: function () {
+                    this.myclassflg = true
+                    this.bodyshow = true
+                },
+                close: function () {
+                    this.myclassflg = false
+                    this.bodyshow = false
+                }
+            },
+            components: {
+                'myslot-component': {
+                    template: '#t56'
+                }
+            }
+        })
+        var app61 = new Vue({
+            el: '#app61',
+            data: {
+                ourclassflg1: true,
+                myclassflg1: false,
+                popupbodyclassflg1: true,
+                popupheaderclassflg1: true,
+                popupcloseclassflg1: true,
+                show1: true,
+                show11: true,
+                popupminclassflg1: true,
+                bodyshow1: false,
+                popupfooterclassflg1: true
+            },
+            methods: {
+                myclick1: function () {
+                    this.myclassflg1 = true
+                    this.bodyshow1 = true
+                },
+                close1: function () {
+                    this.myclassflg1 = false
+                    this.bodyshow1 = false
+                }
+            },
+            components: {
+                'myslot-component': {
+                    template: '#t56'
+                }
+            }
+        })
+
+
+
+        /* 
+        一、Slot插槽概念理解：
+        组件的作用域是独立的：父组件模板的内容在父组件作用域内编译；子组件模板的内容在子组件作用域内编译
+        如果父组件的数据要在子组件中使用，需要子组件定义props。
+        为了让组件可以组合，我们需要一种方式来混合父组件的内容与子组件自己的模板，这个处理称为内容分发
+        Vue实现了一个内容分发 API，使用特殊的 <slot> 元素作为原始内容的插槽；即可理解为<slot>元素是一个内容插槽
+
+        二、实例解析
+        1.第一个<my-component>标签有一段分发内容<h1>Hello Vue.js!</h1>，渲染组件时显示了这段内容，并没有显示slot内的内容，而是用h1的
+          内容替换了slot的内容。上面这个示例是一个匿名slot，它只能表示一个插槽。
+        2.如果需要多个内容插槽，则可以为slot元素指定name属性；可以用于定义除默认插槽以外的多余插槽：
+
+         */
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+    <title>实例_webapp问卷调查</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+
+        #app {
+            margin: 20px 15px;
+        }
+
+        ul>li {
+            list-style: none;
+            margin-left: -45px;
+
+        }
+
+        .btnbody {
+            position: absolute;
+            width: 100%;
+            bottom: 30px;
+            height: 35px;
+        }
+
+        .btnstwidth {
+            width: 45%;
+            padding: 7px 30px;
+        }
+
+        .interest_btnstwidth {
+            width: 30%;
+            padding: 7px 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='app' v-cloak>
+        <div v-if='pagenumber === 1'>
+            <span>1.请选择您的性别</span>
+            <div>
+                <ul>
+                    <li v-for='(list,index) in sex_list'>
+                        <input type="radio" :value="list.mesg" :checked='list.checked' v-on:change='sex_click(list,index)'>
+                        <span>{{list.mesg}}</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="btnbody">
+                <left-btn-sex class="btnstwidth" v-bind:disabled='sex_next_disabled' v-on:next='get_pagenumber'></left-btn-sex>
+                <right-btn-sex class="btnstwidth" v-bind:disabled='sex_rest_disabled' v-on:rest='get_sex_rest'></right-btn-sex>
+            </div>
+        </div>
+        <div v-else-if='pagenumber === 2'>
+            <span>2.请选择您的兴趣（可多选）</span>
+            <ul>
+                <li v-for='(list,index) in interest_list'>
+                    <input type="radio" :value="list.mesg" :checked='list.checked' v-on:change='interest_click(list,index)'>
+                    <span>{{list.mesg}}</span>
+                </li>
+            </ul>
+            <div class="btnbody">
+                <left-btn-interest class="interest_btnstwidth" v-bind:disabled='interest_next_disabled' v-on:next='get_pagenumber'></left-btn-interest>
+                <mid-btn-interest class="interest_btnstwidth" v-on:mid='get_pagenumber'></mid-btn-interest>
+                <right-btn-interest class="interest_btnstwidth" v-bind:disabled='interest_rest_disabled' v-on:rest='get_interest_rest'></right-btn-interest>
+            </div>
+        </div>
+        <div v-else='pagenumber === 3'>
+            <span>3.请介绍一下自己：</span>
+            <div>
+                <textarea rows="10" cols="40" v-model:vale='textarea_value' v-on:blur='textarea_click'></textarea>
+            </div>
+            <div class="btnbody">
+                <left-btn-caption class="interest_btnstwidth" v-on:mid='get_pagenumber'></left-btn-caption>
+                <mid-btn-caption class="interest_btnstwidth" v-bind:disabled='caption_rest_disabled' v-on:rest='get_caption_rest'></mid-btn-caption>
+                <right-btn-caption class="interest_btnstwidth" v-bind:disabled='caption_submit_disabled' v-on:submit='get_submit_rest'></right-btn-caption>
+            </div>
+        </div>
+    </div>
+    <template id="btnComponent">
+        <button v-on:click='btn_click'>{{btntxt}}</button>
+    </template>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                pagenumber: 1,
+                sex_next_disabled: true,
+                sex_rest_disabled: true,
+                interest_next_disabled: true,
+                interest_rest_disabled: true,
+                caption_rest_disabled: true,
+                caption_submit_disabled: true,
+                textarea_value: '',
+                sex_list: [
+                    { mesg: '男', checked: false },
+                    { mesg: '女', checked: false },
+                    { mesg: '保密', checked: false }
+                ],
+                interest_list: [
+                    { mesg: '足球', checked: false },
+                    { mesg: '排球', checked: false },
+                    { mesg: '篮球', checked: false },
+                    { mesg: '看电影', checked: false },
+                    { mesg: '听音乐', checked: false }
+                ]
+            },
+            methods: {
+                get_pagenumber: function (val) {
+                    //父组件通过通过自定义事件v-on:next='get_pagenumber'接收子组件发来的数据（next是自定义事件名，getson是其接收子组件数据的函数名）
+                    this.pagenumber = val
+                },
+                get_sex_rest: function (val) {
+                    //父组件通过通过自定义事件v-on:rest='get_rest'接收子组件发来的数据,根据子组件发来是true或false确定是否重置sex_list的全部checked属性
+                    if (val === false) {
+                        for (var i = 0; i < this.sex_list.length; i++) {
+                            this.sex_list[i].checked = false
+                        }
+                        this.sex_next_disabled = true
+                        this.sex_rest_disabled = true
+                    }
+                },
+                sex_click: function (list, index) {
+                    //切换当前选中，点击时将所有选项清空，再选中当前选项
+                    list.checked = !list.checked;
+                    for (var i = 0; i < this.sex_list.length; i++) {
+                        this.sex_list[i].checked = false
+                    }//清空所有已选
+                    this.sex_list[index].checked = true
+                    //设置当前选中项的checked
+                    this.sex_next_disabled = false
+                    this.sex_rest_disabled = false
+                },
+                /*
+                //界面1
+                */
+                get_interest_rest: function (val) {
+                    if (val === false) {
+                        for (var i = 0; i < this.interest_list.length; i++) {
+                            this.interest_list[i].checked = false
+                        }
+                        this.interest_next_disabled = true
+                        this.interest_rest_disabled = true
+                    }
+                },
+                interest_click: function (list, index) {
+                    list.checked = !list.checked;
+                    this.interest_list[index].checked = true
+                    this.interest_next_disabled = false
+                    this.interest_rest_disabled = false
+                },
+                /*
+                //界面2
+                */
+                get_caption_rest: function (val) {
+                    if (val === false) {
+                        this.textarea_value = ''
+                        this.caption_rest_disabled = true
+                        this.caption_submit_disabled = true
+                    }
+                },
+                textarea_click: function (e) {
+                    if (e.target.value.length > 0) {
+                        this.caption_rest_disabled = false
+                        this.caption_submit_disabled = false
+                    }
+                    else {
+                        this.caption_rest_disabled = true
+                        this.caption_submit_disabled = true
+                    }
+                },
+                get_submit_rest: function () {
+                    alert('已点击提交按钮')
+                }
+            },
+            components: {
+                'left-btn-sex': {
+                    template: '#btnComponent',
+                    data: function () {
+                        return {
+                            btntxt: '下一步',
+                            son_pagenumber: 0
+                        }
+                    },
+                    methods: {
+                        btn_click: function () {
+                            //子组件不能直接获取父组件数据，需通过$emit将自己的数据（son_pagenumber）发送给父组件
+                            this.son_pagenumber = this.$parent.pagenumber + 1
+                            this.$emit('next', this.son_pagenumber)
+                        }
+                    }
+                },
+                'right-btn-sex': {
+                    template: '#btnComponent',
+                    data: function () {
+                        return {
+                            btntxt: '重  置',
+                            rest_flg: false
+                        }
+                    },
+                    methods: {
+                        btn_click: function () {
+                            //子组件数据(变量)rest_flg，当点击重置按钮，通过$emit将rest_flg值发给父组件
+                            this.$emit('rest', this.rest_flg)
+                        }
+                    }
+                },
+                'left-btn-interest': {
+                    template: '#btnComponent',
+                    data: function () {
+                        return {
+                            btntxt: '下一步',
+                            son_pagenumber: 0
+                        }
+                    },
+                    methods: {
+                        btn_click: function () {
+                            this.son_pagenumber = this.$parent.pagenumber + 1
+                            this.$emit('next', this.son_pagenumber)
+                        }
+                    }
+                },
+                'mid-btn-interest': {
+                    template: '#btnComponent',
+                    data: function () {
+                        return {
+                            btntxt: '上一步',
+                            son_pagenumber: 0
+                        }
+                    },
+                    methods: {
+                        btn_click: function () {
+                            this.son_pagenumber = this.$parent.pagenumber - 1
+                            this.$emit('mid', this.son_pagenumber)
+                        }
+                    }
+                },
+                'right-btn-interest': {
+                    template: '#btnComponent',
+                    data: function () {
+                        return {
+                            btntxt: '重  置',
+                            rest_flg: false
+                        }
+                    },
+                    methods: {
+                        btn_click: function () {
+                            this.$emit('rest', this.rest_flg)
+                        }
+                    }
+                },
+                'left-btn-caption': {
+                    template: '#btnComponent',
+                    data: function () {
+                        return {
+                            btntxt: '上一步',
+                            son_pagenumber: 0
+                        }
+                    },
+                    methods: {
+                        btn_click: function () {
+                            this.son_pagenumber = this.$parent.pagenumber - 1
+                            this.$emit('mid', this.son_pagenumber)
+                        }
+                    }
+                },
+                'mid-btn-caption': {
+                    template: '#btnComponent',
+                    data: function () {
+                        return {
+                            btntxt: '重  置',
+                            rest_flg: false
+                        }
+                    },
+                    methods: {
+                        btn_click: function () {
+                            this.$emit('rest', this.rest_flg)
+                        }
+                    }
+                },
+                'right-btn-caption': {
+                    template: '#btnComponent',
+                    data: function () {
+                        return {
+                            btntxt: '提  交',
+                            rest_flg: false
+                        }
+                    },
+                    methods: {
+                        btn_click: function () {
+                            this.$emit('submit', this.rest_flg)
+                        }
+                    }
+                }
+
+            }
+        })
+    /*
+    按钮做组件,颜色、状态可控，可传递一个自定义事件
+    实现思路：
+    1、btnComponent为按钮组件，带一个自定义的点击事件
+    2、父实例有三个界面，根据pagenumber的值确定显示哪一个界面
+    3、每个父实例页面内按钮的文字，通过组件数据btntxt进行return
+    4、子组件根据父实例调用的按钮类型，在子组件数据内声明了变量？_pagenumber和？_flg，通过$emit向父实例传递
+        *？_pagenumber用于给父实例返回按钮操作后？_pagenumber的值
+        *？_flg返回一个布尔值，父组件通过自定义事件接收，并根据接收到的值对按钮状态或？_pagenumber进行处理
+        *说明：因为父实例不知道子组件是否触发了点击事件，所以在子组件定义了？_flg，子组件事件触发后通过$emit向父实例传递自己是否被点击
+    */
+    </script>
+</body>
+
+</html>

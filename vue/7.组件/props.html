@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>props</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+</head>
+
+<body>
+    <fieldset>
+        <legend>静态props和动态props</legend>
+        <div id="app">
+            <form>
+                <label for="name">姓名:</label>
+                <input type="text" size="10" id="name">
+            </form>
+            <my-component my-message="123"></my-component>
+        </div>
+        <template id="t">
+            <div>
+                <span>姓名：</span>
+                <span>{{myMessage}}</span>
+            </div>
+        </template>
+        <div id="app1">
+            <form>
+                <label for="name">姓名:</label>
+                <input type="text" size="10" id="name" v-model='name'>
+            </form>
+            <my-component1 v-bind:my-message='name'></my-component1>
+        </div>
+        <template id="t1">
+            <div>
+                <span>姓名：</span>
+                <span v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }">{{myMessage}}</span>
+            </div>
+        </template>
+        <div id="app2">
+            <my-component2 my-message='[1,2,3]'></my-component2>
+            <my-component2 v-bind:my-message='[1,2,3]'></my-component2>
+        </div>
+        <template id='t2'>
+            <div>length：{{myMessage.length}}</div>
+        </template>
+        <pre>
+            &lt;div id=&quot;app&quot;&gt;
+                &lt;form&gt;
+                    &lt;label for=&quot;name&quot;&gt;姓名:&lt;/label&gt;
+                    &lt;input type=&quot;text&quot; size=&quot;10&quot; id=&quot;name&quot;&gt;
+                &lt;/form&gt;
+                &lt;my-component my-message=&quot;123&quot;&gt;&lt;/my-component&gt;
+            &lt;/div&gt;
+            &lt;template id=&quot;t&quot;&gt;
+                &lt;div&gt;
+                    &lt;span&gt;姓名：&lt;/span&gt;
+                    &lt;span&gt;{{myMessage}}&lt;/span&gt;
+                &lt;/div&gt;
+            &lt;/template&gt;
+            
+            &lt;div id=&quot;app1&quot;&gt;
+                &lt;form&gt;
+                    &lt;label for=&quot;name&quot;&gt;姓名:&lt;/label&gt;
+                    &lt;input type=&quot;text&quot; size=&quot;10&quot; id=&quot;name&quot; v-model=&#x27;name&#x27;&gt;
+                &lt;/form&gt;
+                &lt;my-component1 v-bind:my-message=&#x27;name&#x27;&gt;&lt;/my-component1&gt;
+            &lt;/div&gt;
+            &lt;template id=&quot;t1&quot;&gt;
+                &lt;div&gt;
+                    &lt;span&gt;姓名：&lt;/span&gt;
+                    &lt;span v-bind:style=&quot;{ color: activeColor, fontSize: fontSize + &#x27;px&#x27; }&quot;&gt;{{myMessage}}&lt;/span&gt;
+                &lt;/div&gt;
+            &lt;/template&gt;
+
+            一、app传递的是静态值，没有使用v-bind绑定props；静态绑定props父组件内容变化子组件内容不跟着变化
+            二、app1传递的是动态值，使用v-bind绑定了props；动态绑定props父组件内容变化子组件内容会跟着变化
+            二、app3一个是动态绑定一个是静态绑定，其props的值都是[1,2,3]，但输出length却不同，静态是7动态是3
+                第一个以字符串计算长度，第二个是计算数组长度其，原因就是，静态绑定的值（任何值）都是以字符串算
+        </pre>
+    </fieldset>
+    <fieldset>
+        <legend>对象方式传递及props数据检查</legend>
+        <div id="app3">
+            <my-component3 v-bind='obj'></my-component3>
+        </div>
+        <template id="t3">
+            <div>
+                <p>{{obj_name}}</br>{{obj_age}}</p>
+            </div>
+        </template>
+        <div id="app4">
+            <my-component4 v-bind:obj='obj' v-bind:arry='arry' v-bind:number='number' v-bind:string='string'></my-component4>
+        </div>
+        <template id="t4">
+            <div>
+                <p>对象：{{obj.name}}{{obj.age}}</p>
+                <p>数组：{{arry}}</p>
+                <p>数值：{{number}}</p>
+                <p>字符：{{string}}</p>
+            </div>
+        </template>
+        <pre>
+            待补充：对象所有属性的传递方式及props验证（注意不同的书写方式）
+        </pre>
+    </fieldset>
+    <fieldset>
+        <legend>单项数据流</legend>
+        <div id="app6">
+            <my-component6 :count="count"></my-component6>
+        </div>
+        <template id="t6">
+            <div>
+                <input type="button" @click="changeCount" value="按钮" /> {{count}}
+            </div>
+        </template>
+        <div id="app7">
+            <my-component7 :count="count"></my-component7>
+        </div>
+        <template id="t7">
+            <div>
+                <input type="button" @click="changeCount" value="按钮" /> {{initCount}}
+            </div>
+        </template>
+        <div id='app8'>
+            <my-component8 :width='10'></my-component8>
+        </div>
+        <template id="t8">
+            <div :style='style'>组件内容</div>
+        </template>
+        <pre>
+            ***单向数据流***
+            //一、说明：
+            1.1Vue2.x通过props传递数据是单向的了，也就是父组件数据变化时会传递给子组件，但是反过来不行子组件内部不能直接修改从父级传递过来的数据
+               但是业务中会经常遇到两种需要改变prop的情况
+
+            1.2Prop作为初始值传入后，子组件想把它当作局部数据来用（定义一个局部变量，并用prop的值初始化它）
+            1.3Prop作为原始数据传入，由子组件处理成其它数据输出（定义一个计算属性，处理prop的值并返回）
+ 
+            二、实例说明
+            2.1实例app7，直接在子组件修改props数据，这种情况下浏览器控制台会报错
+            2.2实例app8，在子组件data内定义一个局部变量并用prop的值初始化它，该变量的值其实是引用自父组件的props
+              data:function(){return{initCount: this.count}}，将props的值赋值到initCount，子组件内只用维护initCount，这样避免直接操作count
+            2.3实例app9，父组件v-bind绑定的是静态值，且该值还要再子组件中进行转换，在这种情况下，定义一个计算属性，处理prop的值并返回
+        </pre>
+    </fieldset>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            components: {
+                'my-component': {
+                    props: ['myMessage'],
+                    template: '#t'
+                }
+            }
+        })
+        var app1 = new Vue({
+            el: '#app1',
+            data: {
+                name: 123
+            },
+            components: {
+                'my-component1': {
+                    template: '#t1',
+                    props: ['myMessage'],
+                    data: function () {
+                        return {
+                            activeColor: 'green',
+                            fontSize: 18,
+                        }
+                    }
+                }
+            }
+        })
+        var app2 = new Vue({
+            el: '#app2',
+            components: {
+                'my-component2': {
+                    props: ['myMessage'],
+                    template: '#t2'
+                }
+            }
+        })
+        //////////////////////////静态props和动态props//////////////////////////////
+        var app3 = new Vue({
+            el: '#app3',
+            data: {
+                obj: {
+                    obj_name: '张三',
+                    obj_age: '18'
+                }
+            },
+            components: {
+                'my-component3': {
+                    props: ['obj_name', 'obj_age'],
+                    template: '#t3'
+                }
+            }
+        })
+        var app4 = new Vue({
+            el: '#app4',
+            data: {
+                obj: {
+                    name: '张三',
+                    age: '14'
+                },
+                arry: [1, 2],
+                number: 123,
+                string: '字符串'
+
+            },
+            components: {
+                'my-component4': {
+                    props: {
+                        obj: Object,
+                        arry: Array,
+                        number: {
+                            type: Number,
+                        },
+                        string: {
+                            type: String,
+                        }
+                    },
+                    template: '#t4'
+
+                }
+            }
+        })
+        //////////////////////////对象方式传递及数据验证//////////////////////////////
+        var app6 = new Vue({
+            el: "#app6",
+            data: {
+                count: 0
+            },
+            components: {
+                'my-component6': {
+                    template: '#t6',
+                    props: ['count'],
+                    methods: {
+                        changeCount() {
+                            this.count++
+                        }
+                    }
+                }
+            }
+        });
+        var app7 = new Vue({
+            el: "#app7",
+            data: {
+                count: 0
+            },
+            components: {
+                "my-component7": {
+                    data: function () {
+                        return {
+                            initCount: this.count
+                        }
+                    },
+                    template: '#t7',
+                    props: ['count'],
+                    methods: {
+                        changeCount: function () {
+                            this.initCount++
+                        }
+                    }
+                }
+            }
+        });
+        var app8 = new Vue({
+            el: "#app8",
+            data: {
+                count: 0
+            },
+            components: {
+                "my-component8": {
+                    template: '#t8',
+                    props: ['width'],
+                    computed: {
+                        style: function () {
+                            return {
+                                width: this.width + 'px'
+                            }
+                        }
+                    },
+                }
+            }
+        });
+
+
+        /* 
+        关系理解： props向下传递，事件向上传递。父组件通过 props 给子组件下发数据，子组件通过事件给父组件发送消息
+        数据说明：props组件声明后需要从父组件接收数据， props 的值可以是两种， 一种是字符串数组，一种是对象。
+         */
+    </script>
+</body>
+
+</html>

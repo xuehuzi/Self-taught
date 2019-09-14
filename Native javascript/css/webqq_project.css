@@ -1,0 +1,1851 @@
+/*自适应div背景图不显示问题-设置Relative定位解决显示，但div高度自适应时背景图高度显示不全*/
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: '微软雅黑', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+li {
+    list-style-type: none;
+}
+
+.cursor_type {
+    cursor: pointer;
+}
+
+.user_select_type {
+    user-select: none;
+}
+
+.scrollbar_type::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollbar_type::-webkit-scrollbar-thumb {
+    border-radius: 20px;
+    background-color: #555;
+}
+
+.scrollbar_type_right::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollbar_type_right::-webkit-scrollbar-thumb {
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid white;
+}
+
+/*test-webkit-box*/
+.father {
+    display: -webkit-box;
+    display: -moz-box;
+}
+
+.son {
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+}
+
+/*test-webkit-box*/
+
+#bg_img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url("../img/qqbg_02.jpg") no-repeat;
+    background-size: 100% 100%;
+}
+
+
+/**/
+#no_body {
+    padding-top: 40px;
+    font-size: 1.7em;
+    text-align: center;
+    display: none;
+    top: 41%;
+    position: absolute;
+    width: 100%;
+    background: white;
+}
+
+#no_div :first-child {
+    display: inline-block;
+    position: relative;
+    height: 133px;
+    width: 273px;
+    background-image: url('../img/google_chrome.png');
+}
+
+#no_div :last-child {
+    display: inline-block;
+    position: relative;
+    height: 133px;
+    width: 273px;
+    background-image: url('../img/firfox.png');
+}
+/**/
+
+#bg_body {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+#left {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+#qq_body {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    background-color: white;
+}
+
+#top_touxiang_icon {
+    display: none;
+}
+
+#min_header {
+    position: absolute;
+    height: 45px;
+    width: 100%;
+    background: linear-gradient(#555, #222);
+    border-radius: 10px 10px 0 0;
+    z-index: 10000;
+}
+
+#min_header_search {
+    position: absolute;
+    left: 100%;
+    margin-left: -55px;
+    margin-top: 7px;
+    width: 45px;
+    height: 30px;
+    background: linear-gradient(#555, #222);
+    border: 1px solid #222;
+    border-radius: 10px;
+    display: none;
+}
+
+#min_header_search img {
+    display: block;
+    width: 15px;
+    height: 15px;
+    margin: 0 auto;
+    padding-top: 7px;
+}
+
+#min_header h3 {
+    font-size: 18px;
+    font-weight: 400;
+    color: white;
+    line-height: 45px;
+    text-align: center;
+}
+
+#min_header nav {
+    position: absolute;
+    width: 100%;
+    height: 38px;
+    background-color: white;
+    /* top切换到联系人需要显示nav【直接删除dispay不可设置为block，否则联系人nav等分三份会显示错误】*/
+}
+
+#min_header nav :first-child {
+    color: #0aa7ff;
+    border-bottom-color: #0aa7ff;
+}
+
+#min_header nav :nth-child(2) {
+    border-left: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+}
+
+#min_header nav span {
+    height: 20px;
+    display: block;
+    margin-top: 8px;
+    padding-bottom: 10px;
+    text-align: center;
+    border-bottom: 2px solid #CCCCCC;
+}
+
+#min_bg {
+    position: absolute;
+    width: 100%;
+    top: 45px;
+    bottom: 50px;
+    overflow: hidden;
+    /* top切换到联系人时修改85,其他为45*/
+    background-color: white;
+}
+
+/*4.8*/
+#min_bg_div_list {
+    width: 400%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    /*底栏面包切换时更改left值最大0最小-300%*/
+}
+
+/*4.8*/
+
+/*4.28*/
+#min_bg_div, #min_bg_div1, #min_bg_div2, #min_bg_div3 {
+    /*position: absolute;*/
+    height: 100%;
+    width: 25%;
+    overflow: auto;
+    /*4.8*/
+    float: left;
+    /*4.8*/
+}
+
+/*4.28*/
+
+#min_bg_div1_1 {
+    position: absolute;
+    height: 100%;
+    width: 25%;
+    /*4.8*/
+    overflow: hidden;
+
+}
+
+#min_bg_div1_list {
+    position: absolute;
+    width: 300%;
+    height: 100%;
+    left: 0;
+    background-color: grey;
+}
+
+#min_bg_ul1_ul, #min_bg_ul1_qundiv, #min_bg_ul1_talkdiv {
+    width: 33.33%;
+    height: 100%;
+    float: left;
+    overflow: auto;
+}
+
+/*4.28*/
+
+#min_bg_div ul li {
+    list-style-type: none;
+    height: 60px;
+    border-top: 1px solid #ccc;
+    background: linear-gradient(#fff, #f1f1f1);
+}
+
+#min_bg_div ul li img, .min_bg_ul1_li_ul li img {
+    float: left;
+    height: 40px;
+    width: 40px;
+    margin: 15px 15px 0 10px;
+}
+
+#min_bg_div ul li p, .min_bg_ul1_li_ul li p {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/*1.3*/
+.min_bg_div1_li div {
+    background-color: white;
+    border-top: 1px solid #CCCCCC;
+    height: 40px;
+    line-height: 40px;
+}
+
+.min_bg_ul1_li_ul li {
+    background-color: #f5f5f5;
+    border-top: 1px solid #e3e3e3;
+    height: 60px;
+    /**/
+    display: block;
+    /**/
+}
+
+/*1.4new*/
+
+.min_bg_ul1_li_ul_1 {
+    display: none;
+}
+
+#min_bg_ul1_talkdiv {
+    background-color: #808080;
+}
+
+#min_bg_div2 ul li {
+    height: 220px;
+    background: linear-gradient(#e6e7ea, #d3d6dc);
+    border-bottom: 1px solid red;
+    border-bottom: 1px solid #c1c7d2;
+    border-left: 1px solid #eceef2;
+    border-right: 1px solid #c1c7d2;
+}
+
+#min_bg_div2 ul li a {
+    text-align: center;
+    font-size: 13px;
+    margin-top: -25px;
+}
+
+.min_bg_ul2_li_icon, #min_bg_div2 ul li a {
+    display: block;
+}
+
+#min_bg_div2 ul :nth-child(1) span {
+    background: url("../img/plugin_icon_qzone.jpg") no-repeat;
+    background-position-x: 50%;
+    background-position-y: 18%;
+    width: 100%;
+    height: 100%;
+    background-size: 60%;
+}
+
+#min_bg_div2 ul :nth-child(2) span {
+    background: url("../img/plugin_icon_qmail.jpg") no-repeat;
+    background-position-x: 50%;
+    background-position-y: 18%;
+    width: 100%;
+    height: 100%;
+    background-size: 60%;
+}
+
+#min_bg_div2 ul :nth-child(3) span {
+    background: url("../img/plugin_icon_qq_portal.png") no-repeat;
+    background-position-x: 50%;
+    background-position-y: 18%;
+    width: 100%;
+    height: 100%;
+    background-size: 60%;
+}
+
+/*1.5new*/
+
+.div3_min_bg_div {
+    height: 42px;
+    width: auto;
+    margin: 0 10px;
+    padding: 0 10px;
+    margin-bottom: 20px;
+    border: 1px solid #afc8e2;
+    border-radius: 5px;
+}
+
+.div3_min_bg_div span {
+    line-height: 42px;
+}
+
+#div3_min_bg_div_1 {
+    height: 78px;
+    margin-top: 10px;
+    position: relative;
+}
+
+#div3_min_bg_div_1 img {
+    height: 40px;
+    width: 40px;
+    margin-top: 16px;
+    float: left;
+}
+
+#div3_min_bg_div_1_s1 {
+    font-size: 20px;
+    margin-top: 8px;
+    float: left;
+    margin-left: 10px;
+}
+
+#div3_min_bg_div_1_s2 {
+    color: #666666;
+    margin-top: 28px;
+    float: left;
+    margin-left: -80px;
+}
+
+#div3_min_bg_div_1_s3 {
+    float: right;
+    margin-right: 15px;
+    margin-top: 34px;
+    height: 10px;
+    width: 10px;
+    background: url("../img/state_sprite.gif") no-repeat;
+    background-position-x: 0;
+}
+
+#div3_min_bg_div_1_s4 {
+    float: right;
+    margin-right: -22px;
+    margin-top: 37px;
+    height: 10px;
+    width: 10px;
+    background: url("../img/state_sprite.gif") no-repeat -165px 0;
+}
+
+#div3_min_bg_div_1 ul {
+    position: absolute;
+    width: 70px;
+    height: 154px;
+    border: 1px solid black;
+    margin-top: 50px;
+    right: 0;
+    background-color: white;
+    display: none;
+}
+
+#div3_min_bg_div_1_ul li {
+    margin-bottom: 10px;
+    width: 70px;
+    height: 12px;
+}
+
+#div3_min_bg_div_1_ul :first-child {
+    margin-top: 3px;
+}
+
+#div3_min_bg_div_1_ul li span {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-left: 5px;
+}
+
+#div3_min_bg_div_1_ul li i {
+    font-size: 12px;
+    margin-left: -3px;
+    font-style: normal;
+}
+
+#div3_min_bg_div_1_ul_s1 {
+    background: url("../img/state_sprite.gif") no-repeat;
+}
+
+#div3_min_bg_div_1_ul_s2 {
+    background: url("../img/state_sprite.gif") no-repeat;
+    background-position-x: -72px;
+}
+
+#div3_min_bg_div_1_ul_s3 {
+    background: url("../img/state_sprite.gif") no-repeat;
+    background-position-x: -18px;
+}
+
+#div3_min_bg_div_1_ul_s4 {
+    background: url("../img/state_sprite.gif") no-repeat;
+    background-position-x: -36px;
+}
+
+#div3_min_bg_div_1_ul_s5 {
+    background: url("../img/state_sprite.gif") no-repeat;
+    background-position-x: -108px;
+}
+
+#div3_min_bg_div_1_ul_s6 {
+    background: url("../img/state_sprite.gif") no-repeat;
+    background-position-x: -54px;
+}
+
+#div3_min_bg_div_1_ul_s7 {
+    background: url("../img/state_sprite.gif") no-repeat;
+    background-position-x: -90px;
+}
+
+#div3_min_bg_div_3 img {
+    float: right;
+    margin-top: 10px;
+}
+
+#div3_min_bg_div_4 {
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.div3_min_bg_div_4_1 {
+    margin: 0 10px;
+    padding: 0 10px;
+    border: 1px solid #afc8e2;
+    line-height: 42px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+#div3_min_bg_div_4 img {
+    float: right;
+    margin-top: 10px;
+    transform: rotate(0deg);
+    -ms-transform: rotate(0deg); /* Internet Explorer */
+    -moz-transform: rotate(0deg); /* Firefox */
+    -webkit-transform: rotate(0deg); /* Safari 和 Chrome */
+    -o-transform: rotate(0deg); /* Opera */
+}
+
+#div3_min_bg_div_4 ul {
+    width: auto;
+    margin: 0 10px;
+    padding: 0 10px;
+    border-top: 1px solid #afc8e2;
+    border-right: 1px solid #afc8e2;
+    border-left: 1px solid #afc8e2;
+    border-radius: 5px;
+    line-height: 42px;
+    display: none;
+}
+
+#div3_min_bg_div_4 ul li {
+    height: 42px;
+    border-bottom: 1px solid #afc8e2;
+    margin: 0 -10px;
+    padding: 0 10px;
+}
+
+#div3_min_bg_div_5 {
+    height: 36px;
+    background: linear-gradient(#f54533, #cf2816);
+    color: white;
+    text-align: center;
+    line-height: 36px;
+    text-shadow: 0 0 1px white;
+}
+
+/*1.5new*/
+
+.min_bg_ul1_s1 {
+    height: 15px;
+    width: 15px;
+    float: left;
+    margin-left: 10px;
+    margin-top: 13px;
+}
+
+.min_bg_ul1_s1_1 {
+    height: 15px;
+    width: 15px;
+    float: left;
+    margin-left: 10px;
+    margin-top: 13px;
+    -ms-transform: rotate(90deg); /* IE 9 */
+    -moz-transform: rotate(90deg); /* Firefox */
+    -webkit-transform: rotate(90deg); /* Safari and Chrome */
+    -o-transform: rotate(90deg); /* Opera */
+    transform: rotate(90deg);
+}
+
+.min_bg_ul1_s3 {
+    float: right;
+    margin-right: 30px;
+    color: #818181;
+    font-size: 12px;
+}
+
+.talk_1 {
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.talk {
+    font-size: 12px;
+    color: #b8b8b8;
+}
+
+#min_footer {
+    position: absolute;
+    bottom: 0;
+    height: 50px;
+    width: 100%;
+    color: #fff;
+    background: linear-gradient(#555, #222);
+    border-radius: 0 0 10px 10px;
+    z-index: 10001;
+}
+
+#min_footer_ul {
+    display: -webkit-box;
+    display: -moz-box;
+    height: 50px;
+    width: 100%;
+    color: #fff;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 10001;
+}
+
+#min_footer ul li {
+    height: 50px;
+    background: linear-gradient(#555, #222);
+    border-left: 1px solid #555;
+    list-style-type: none;
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+}
+
+.min_footer_li_l {
+    border-right: 1px solid #222;
+}
+
+#min_footer ul li:first-child {
+    border-left: 0;
+    border-radius: 0 0 0 10px;
+}
+
+#min_footer ul li:last-child {
+    border-radius: 0 0 10px 0;
+}
+
+#min_footer ul li a {
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    height: 50px;
+}
+
+.min_footer_li {
+    background: #333;
+    border-left-color: #222;
+    text-shadow: 0 1px 0 #000;
+    box-shadow: inset 0 0 10px #111
+}
+
+#min_footer ul li img {
+    display: block;
+    margin: 0 auto;
+    width: 34px;
+    height: 34px;
+}
+
+#min_footer ul li span {
+    display: block;
+    text-align: center;
+    font-size: 12px;
+    margin-top: -3px;
+}
+
+/*left*/
+
+#right {
+    /*position: absolute;*/
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+    float: right;
+    display: block;
+    overflow-x: hidden;
+}
+
+#qq_talk_body {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10001;
+    display: none;
+}
+
+#qq_talk_setup_head_body_1 {
+    /*padding: 0 10px;*/
+    margin: 0 10px;
+}
+
+#qq_talk_setup_head_body_1 div {
+    border-left: 1px solid #AFC8E2;
+    border-right: 1px solid #AFC8E2;
+    border-bottom: 1px solid #AFC8E2;
+    padding: 10px;
+    background: #fff;
+}
+
+#qq_talk_setup_head_body_1 div:first-of-type {
+    border-top: 1px solid #AFC8E2;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    margin-top: 10px;
+
+}
+
+.hua_dong label {
+    display: inline-block;
+    width: 56px;
+    height: 24px;
+    float: right;
+}
+
+.hua_dong label > input {
+    margin: 0;
+    border: 0;
+    width: 100%;
+    height: 100%;
+    float: right;
+    /*background-image: -webkit-linear-gradient(#5393c5, #6facd5);*/
+    background-image: linear-gradient(#d0d0d0, #dfdfdf);
+    cursor: pointer;
+    outline: none;
+    color: transparent;
+    /**/
+    border-radius: 50px;
+    -webkit-border-radius: 50px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.hua_dong label > span {
+    position: absolute;
+    display: inline-block;
+    right: 22px; /*10&40*/
+    width: 22px;
+    height: 22px;
+    border-radius: 50px;
+    background-image: linear-gradient(#fff, #f1f1f1);
+    cursor: pointer;
+}
+
+#qq_talk_setup_head_body_1 div:last-of-type {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    margin-bottom: 10px;
+}
+
+#qq_talk_setup_head_body_2 {
+    border: 1px solid #AFC8E2;
+    border-radius: 5px;
+    margin: 0 10px;
+    background: #fff;
+}
+
+#qq_talk_setup_head_body_2 > .hua_dong {
+    padding: 10px;
+}
+
+#qq_talk_setup, #qq_talk_seach {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #ededed;
+    border-radius: 10px 10px 0 0;
+    z-index: 10001;
+    display: none;
+}
+
+#qq_talk_body_min_body > .qq_talk_body > div {
+    border: 1px solid #AFC8E2;
+    margin: 0 10px 10px 10px;
+    border-radius: 5px;
+    background-color: white;
+}
+
+#qq_talk_body_min_body > .qq_talk_group > div {
+    border: 1px solid #AFC8E2;
+    margin: 0 10px 10px 10px;
+    border-radius: 5px;
+    background-color: white;
+}
+
+#qq_talk_body_min_body > .qq_talk_body span {
+    padding: 10px;
+}
+
+#qq_talk_body_min_body > .qq_talk_group span {
+    padding: 10px;
+}
+
+#qq_talk_date_body, #qq_talk_date_group {
+    padding-top: 10px;
+    border-radius: 0 0 10px 10px;
+    display: none;
+}
+
+#qq_talk_date_body_1, #qq_talk_date_group_1 {
+    padding: 10px;
+}
+
+#qq_talk_date_body_1 img {
+    vertical-align: middle;
+}
+
+#qq_talk_date_group_1 img {
+    vertical-align: middle;
+}
+
+#qq_talk_date_body_1 h3 {
+    display: inline-block;
+    padding-left: 10px;
+    padding-top: 10px;
+    vertical-align: baseline;
+}
+
+#qq_talk_date_group_1 h3 {
+    display: inline-block;
+    padding-left: 10px;
+    padding-top: 10px;
+    vertical-align: baseline;
+}
+
+#qq_talk_date_body_1 + div {
+    padding: 8px 0;
+}
+
+#qq_talk_date_group_1 ~ div {
+    padding: 8px 0;
+}
+
+#qq_talk_body_min_body > .qq_talk_body :nth-child(3) div {
+    padding: 8px 0;
+}
+
+#qq_talk_body_min_body > .qq_talk_body :nth-child(3) div:first-of-type {
+    border-bottom: 1px solid #AFC8E2;
+}
+
+#qq_talk_body_min_body > .qq_talk_body :nth-child(4) div {
+    padding: 8px 0;
+}
+
+#qq_talk_body_min_body > .qq_talk_body :nth-child(4) div:first-of-type {
+    border-bottom: 1px solid #AFC8E2;
+}
+
+#qq_talk_body_min_body > .qq_talk_body :nth-child(4) div:last-of-type {
+    border-top: 1px solid #AFC8E2;
+}
+
+#qq_talk_body_min_body > .qq_talk_body :nth-child(5) div {
+    padding: 8px 0;
+}
+
+#qq_talk_body_min_body > .qq_talk_body :nth-child(5) div:first-of-type {
+    border-bottom: 1px solid #AFC8E2;
+}
+
+#qq_talk_body_min_body > .qq_talk_body :nth-child(5) div:last-of-type {
+    border-top: 1px solid #AFC8E2;
+}
+
+/**/
+#qq_talk_body_min_body > .qq_talk_group :nth-child(3) div {
+    padding: 8px 0;
+}
+
+#qq_talk_body_min_body > .qq_talk_group :nth-child(3) div:first-of-type {
+    border-bottom: 1px solid #AFC8E2;
+}
+
+/**/
+
+.qq_talk_body {
+    background: #ededed;
+    position: absolute;
+    bottom: 0;
+    top: 45px;
+    height: auto;
+    width: 100%;
+    overflow: auto;
+}
+
+.qq_talk_group {
+    background: #ededed;
+    position: absolute;
+    bottom: 0;
+    top: 45px;
+    height: auto;
+    width: 100%;
+    overflow: auto;
+}
+
+#qq_talk_seach_input {
+    position: relative;
+    border-top: 1px solid #696969;
+    border-bottom: 1px solid #a2a2a2;
+    padding: 10px 6px;
+    background: -webkit-linear-gradient(top, #ededed, #d6d6d6);
+    z-index: 10001;
+}
+
+#qq_talk_seach_list_div {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    background: #b9b9b9;
+    bottom: 0;
+    top: 55px;
+    overflow: auto;
+    z-index: 10001;
+}
+
+#qq_talk_seach_input_div {
+    position: relative;
+    border: 1px solid #d0d0d0;
+    border-radius: 18px;
+    padding: 5px 32px 0 20px;
+    background: #fff;
+    box-shadow: 0 1px #ececec, inset 0 1px #a7a8a8, inset 1px 0 #a7a8a8, inset -1px 0 #a7a8a8;
+    margin-right: 0;
+    /*input输入查找内容时，margin-right为60，否则为0*/
+}
+
+#qq_talk_seach_input_div input {
+    width: 100%;
+    font-size: 16px;
+    line-height: 20px;
+    background: #fff;
+    font-family: '微软雅黑', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    border: 0;
+    outline: 0;
+    margin-top: -3px;
+    padding-bottom: 3px;
+}
+
+#qq_talk_seach_list button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 50px;
+    height: 33px;
+    display: none;
+}
+
+#qq_talk_seach_input_div button {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    border: 0;
+    width: 20px;
+    height: 20px;
+    background: #bfbfbf url("../img/clear.png") center;
+    border-radius: 10px;
+    display: none;
+}
+
+#qq_talk_seach_list ul {
+    position: relative;
+    top: 0;
+    bottom: 56px;
+}
+
+#qq_talk_seach_list ul li {
+    border-color: #ccc;
+    background: #f1f1f1;
+    background: linear-gradient(#fff, #f1f1f1);
+    position: relative;
+    border-top: 1px solid #e3e3e3;
+    padding: 0 0 0 10px;
+    line-height: 100%;
+    height: 56px;
+}
+
+/*8.17*/
+
+.qq_talk_head {
+    position: absolute;
+    width: 100%;
+    height: 45px;
+    background: linear-gradient(#555, #222);
+    z-index: 10000;
+    color: white;
+}
+
+.qq_talk_head h3 {
+    position: absolute;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 45px;
+    left: 50%;
+    margin-left: -30px;
+}
+
+#qq_talk_seach div > span {
+    position: absolute;
+    height: 30px;
+    line-height: 30px;
+    margin-left: 25px;
+    font-size: 14px;
+    background: -webkit-linear-gradient(top, #555, #222);
+    border-top: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-left: 0;
+    border-color: #2c2727 #2c2727 #1a1919;
+    padding: 0 10px;
+    border-radius: 0 5px 5px 0;
+    margin-top: 7px;
+    cursor: pointer;
+}
+
+#qq_talk_seach div > span::after {
+    content: "";
+    border: 1px solid #000 !important;
+    display: block;
+    position: absolute;
+    transform: rotate(45deg);
+    z-index: -1;
+    width: 22px;
+    height: 22px;
+    left: -11px;
+    top: 3px;
+    border-radius: 3px;
+    background: -webkit-linear-gradient(top, #555, #222);
+    box-shadow: inset 1px 0 rgba(255, 255, 255, .1), 0 1px rgba(255, 255, 255, .1);
+}
+
+#qq_talk_setup > :first-child > span {
+    position: absolute;
+    height: 30px;
+    line-height: 30px;
+    margin-left: 25px;
+    font-size: 14px;
+    background: -webkit-linear-gradient(top, #555, #222);
+    border-top: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-left: 0;
+    border-color: #2c2727 #2c2727 #1a1919;
+    padding: 0 10px;
+    border-radius: 0 5px 5px 0;
+    margin-top: 7px;
+    cursor: pointer;
+}
+
+#qq_talk_setup > :first-child > span::after {
+    content: "";
+    border: 1px solid #000 !important;
+    display: block;
+    position: absolute;
+    transform: rotate(45deg);
+    z-index: -1;
+    width: 22px;
+    height: 22px;
+    left: -11px;
+    top: 3px;
+    border-radius: 3px;
+    background: -webkit-linear-gradient(top, #555, #222);
+    box-shadow: inset 1px 0 rgba(255, 255, 255, .1), 0 1px rgba(255, 255, 255, .1);
+}
+
+#qq_talk_body_head_selent, #qq_talk_body_head_close {
+    height: 30px;
+    width: 70px;
+    background: linear-gradient(#555, #222);
+    border: 1px solid #222;
+    border-radius: 10px;
+    margin-top: 5px;
+}
+
+#qq_talk_body_head_selent {
+    float: left;
+    margin-left: 15px;
+}
+
+#qq_talk_body_head_selent div {
+    position: relative;
+    width: 0;
+    height: 0;
+    border-width: 9px 7px 0 7px;
+    border-color: white transparent;
+    border-style: solid;
+    left: 50%;
+    top: 50%;
+    margin-left: -7px;
+}
+
+/*11.3*/
+#qq_talk_body_head > :nth-child(2) {
+    position: absolute;
+    height: 30px;
+    line-height: 30px;
+    margin-left: 25px;
+    font-size: 14px;
+    background: -webkit-linear-gradient(top, #555, #222);
+    border-top: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-left: 0;
+    border-color: #2c2727 #2c2727 #1a1919;
+    padding: 0 10px;
+    border-radius: 0 5px 5px 0;
+    margin-top: 7px;
+    cursor: pointer;
+    display: none;
+}
+
+#qq_talk_body_head > :nth-child(2) > span::after {
+    content: "";
+    border: 1px solid #000 !important;
+    display: block;
+    position: absolute;
+    transform: rotate(45deg);
+    z-index: -1;
+    width: 22px;
+    height: 22px;
+    left: -11px;
+    top: 3px;
+    border-radius: 3px;
+    background: -webkit-linear-gradient(top, #555, #222);
+    box-shadow: inset 1px 0 rgba(255, 255, 255, .1), 0 1px rgba(255, 255, 255, .1);
+}
+
+/*11.3*/
+
+#qq_talk_body_head_close {
+    float: right;
+    margin-right: 15px;
+    line-height: 30px;
+    text-align: center;
+}
+
+/*1.11new*/
+#qq_talk_body_head_news {
+    position: absolute;
+    width: 100%;
+    height: 80px;
+    background: linear-gradient(#3c3c3c, #3d3d3d);
+    z-index: 10002;
+    top: 45px;
+    display: none;
+    /*点击时top为45px，隐藏时display为block，top为-35*/
+}
+
+#qq_talk_body_head_news div {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(#3d3d3d, #3c3c3c);
+    float: left;
+    border-right: 1px solid #222;
+    border-left: 1px solid #555;
+    color: white;
+    text-align: center;
+}
+
+#qq_talk_body_head_news span {
+    display: block;
+    width: 35px;
+    height: 30px;
+    margin: 10px auto;
+    background-image: url("../img/menu_icons.png");
+}
+
+#qq_talk_body_head_news > div {
+
+}
+
+/*10.30*/
+#qq_talk_body_min_body {
+    position: absolute;
+    top: 0;
+    /*top: 45px;*/
+    bottom: 0;
+    width: 100%;
+    height: auto;
+}
+
+/*10.30*/
+
+#qq_talk_body_min {
+    position: absolute;
+    top: 45px;
+    bottom: 50px;
+    width: 100%;
+    height: auto;
+    background-color: #a8b6b9;
+    overflow: auto;
+    z-index: 10001;
+}
+
+/*3.14*/
+.qq_talk_body_min_time {
+    text-align: center;
+}
+
+#qq_talk_body_min_time span {
+    width: 50px;
+    height: 15px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    margin: 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    display: inline-block;
+    line-height: 15px;
+}
+
+.qq_talk_body_min_others {
+    text-align: left;
+    padding: 10px;
+}
+
+.qq_talk_body_min_me {
+    text-align: right;
+    padding: 10px;
+}
+
+.qq_talk_body_min_zhanghao {
+    font-size: 14px;
+    text-shadow: 1px 1px 1px #fff;
+}
+
+.qq_talk_body_min_mesg {
+    display: inline-block;
+    max-width: 50%;
+    padding: 10px 15px;
+    margin-top: 10px;
+}
+
+.qq_talk_body_min_touxiang {
+    width: 40px;
+    height: 40px;
+}
+
+.qq_talk_body_min_others img {
+    float: left;
+    margin: 0 10px 0 10px;
+}
+
+.qq_talk_body_min_me > img {
+    float: right;
+    margin: 0 10px 0 10px;
+}
+
+.qq_talk_body_min_me > .qq_talk_body_min_zhanghao {
+    text-align: right;
+}
+
+.qq_talk_body_min_me > .qq_talk_body_min_mesg {
+    text-align: left;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px #000;;
+    background: linear-gradient(#fefefe, #e2e3e5);
+    word-break: break-all;
+
+}
+
+.qq_talk_body_min_others > .qq_talk_body_min_mesg {
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px #000;
+    background: linear-gradient(#cf9, #9c3);
+    word-break: break-all;
+}
+
+/*3.14*/
+#qq_talk_body_footer_bar {
+    position: absolute;
+    left: 0;
+    display: -webkit-box;
+    width: 100%;
+    height: 50px;
+    color: #fff;
+    background: #333;
+    background: linear-gradient(#555, #222);
+    z-index: 10002;
+    bottom: 310px;
+    /*表情窗口显示时，bottom值为310,如果窗口尺寸渐小则看代码内具体bottom的值，隐藏时为0*/
+}
+
+#qq_talk_input {
+    display: block;
+    font-family: '微软雅黑', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    height: 32px;
+    width: 100%;
+    padding: 5px 10px;
+    margin: 8px 10px 5px 10px;
+    max-height: 80px;
+    overflow: hidden;
+    resize: none;
+    outline: none;
+    box-sizing: border-box;
+    -webkit-box-flex: 1;
+    -moz-box-shadow: inset 0 1px 4px rgba(0, 0, 0, .2);
+    -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, .2);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, .2);
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+#qq_talk_body_footer_bar img {
+    width: 30px;
+    height: 30px;
+    padding: 10px 0 0 10px;
+}
+
+#qq_talk_body_footer_bar h3 {
+    width: 54px;
+    height: 40px;
+    color: white;
+    border: 1px solid #044062;
+    border-radius: 5px;
+    margin-right: 10px;
+    margin-top: 4px;
+    background: #396b9e;
+    background: linear-gradient(#5f9cc5, #396b9e);
+    text-align: center;
+    line-height: 40px;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+/*3.27*/
+#qq_talk_body_footer_face {
+    position: absolute;
+    bottom: 0;
+    overflow: hidden;
+    left: 50%;
+    display: none;
+}
+
+#qq_talk_body_footer_face_choose {
+    width: 100%;
+    height: 310px;
+    background-color: white;
+    position: absolute;
+    bottom: 0;
+    z-index: 10001;
+    text-align: center;
+}
+
+#qq_talk_body_footer_face_choose ul {
+    height: 30px;
+    margin: 0 auto;
+    position: absolute;
+    bottom: 0;
+    background-color: rgba(34, 34, 34, .7) !important;
+    border-radius: 0 0 10px 10px;
+    left: 50%;
+}
+
+#qq_talk_body_footer_face_choose ul li {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background-color: #818181;
+    border-radius: 50px;
+    margin: 5px 5px;
+}
+
+.qq_talk_body_footer_face_img {
+    position: absolute;
+    bottom: 30px;
+    z-index: 10002;
+    display: block;
+    margin: 0 auto;
+    left: 50%;
+}
+
+.qq_talk_body_footer_face_img li {
+    float: left;
+}
+
+#qq_talk_body_footer_face ul li i {
+    float: left;
+    display: block;
+}
+
+#qq_talk_body_footer_face ul li i:hover {
+    border: 1px solid #5f9cc5;
+}
+
+.qq_talk_body_footer_face_img_001 {
+    background: url("../img/004.jpg") no-repeat;
+}
+
+.qq_talk_body_footer_face_img_002 {
+    background: url("../img/005.jpg") no-repeat;
+}
+
+.qq_talk_body_footer_face_img_003 {
+    background: url("../img/006.jpg") no-repeat;
+}
+
+.qq_talk_body_footer_face_img_004 {
+    background: url("../img/007.jpg") no-repeat;
+}
+
+.qq_talk_body_footer_face_img_005 {
+    background: url("../img/008.jpg") no-repeat;
+}
+
+.qq_talk_body_footer_face_img_006 {
+    background: url("../img/009.jpg") no-repeat;
+}
+
+/*3.27*/
+
+/*right*/
+
+@-webkit-keyframes bg_img_move {
+    0% {
+        opacity: 0
+    }
+    25% {
+        opacity: .45
+    }
+    50% {
+        opacity: .85
+    }
+    75% {
+        opacity: 1
+    }
+}
+
+@media all and (min-width: 1000px) {
+    #qq_talk_body_footer_bar, #qq_talk_body_footer_face_choose {
+        border-radius: 0 0 10px 10px;
+    }
+
+    .qq_talk_head {
+        border-radius: 10px 10px 0 0;
+    }
+
+    #bg_img {
+        -webkit-animation-name: bg_img_move;
+        -webkit-animation-timing-function: ease-out;
+        -webkit-animation-duration: 2s;
+        -webkit-animation-direction: alternate
+    }
+
+    #bg_body {
+        width: 1000px;
+        height: 100%;
+        margin: 0 auto;
+    }
+
+    #left {
+        width: 280px;
+        height: 100%;
+    }
+
+    #qq_body {
+        width: 100%;
+        height: 80%;
+        top: 12%;
+    }
+
+    #top_touxiang_icon {
+        position: absolute;
+        display: block;
+        width: 100%;
+        z-index: 10001;
+        top: -50px;
+    }
+
+    #top_touxiang {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        left: 20px;
+        top: -22px;
+        border: 3px solid #fff;
+        box-shadow: 1px 1px 5px #000;
+
+    }
+
+    .top_touxiang_id, .top_touxiang_shuoshuo {
+        margin-left: 77px;
+        top: -21px;
+        font-size: 16px;
+        position: absolute;
+        text-shadow: 0 0 3px snow, 0 0 3px snow, 0 0 3px snow, 0 0 3px snow;
+        overflow: hidden;
+        height: 22px;
+        width: 148px
+    }
+
+    .top_touxiang_shuoshuo {
+        font-size: 12px;
+        top: 4px;
+    }
+
+    #top_icon {
+        position: absolute;
+        left: 20px;
+        top: 30px
+    }
+
+    #top_icon a {
+        display: block;
+        float: left;
+        margin-right: 8px;
+        width: 15px;
+        height: 15px;
+        background-image: url("../img/icons_list.png");
+        background-repeat: no-repeat;
+    }
+
+    .top_icon_qzone {
+        background-position: 0 0;
+    }
+
+    .top_icon_mail {
+        background-position: -20px 0;
+    }
+
+    .top_icon_weibo {
+        background-position: -40px 0;
+    }
+
+    .top_icon_video {
+        background-position: -60px 0;
+    }
+
+    .top_icon_qqwebsite {
+        background-position: -81px 0;
+    }
+
+    .top_icon_music {
+        background-position: -103px -1px;
+    }
+
+    .top_icon_wallet {
+        background-position: -124px 0;
+    }
+
+    .top_icon_pengyou {
+        background-position: -144px 0;
+    }
+
+    .top_icon_weiyun {
+        background-position: -166px 0;
+    }
+
+    /*left*/
+    #right {
+        position: relative;
+        width: 700px;
+        float: right;
+    }
+
+    /*8.17*/
+    #qq_talk_setup, #qq_talk_seach, #qq_talk_body {
+        height: 80%;
+        top: 12%;
+    }
+
+    /*8.17*/
+    /*1.4new*/
+    #min_bg_div2 ul li {
+        height: 93px;
+    }
+
+    /*1.4new*/
+    #qq_talk_body_min {
+        background-color: rgba(0, 0, 0, 0.5) !important;
+    }
+
+    #qq_talk_body_footer_face_choose {
+        background-color: rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .qq_talk_body_footer_face_img {
+        bottom: 30px;
+    }
+
+}
+
+@media (max-width: 320px) {
+    #qq_talk_body_min {
+        bottom: 50px;
+        /*bottom: 50px;*/
+        /*bottom: 210;*/
+    }
+
+    #qq_talk_body_footer_face {
+        margin-left: -160px;
+        width: 320px;
+        height: 160px;
+    }
+
+    #qq_talk_body_footer_face_choose {
+        height: 210px;
+        display: none;
+        /*display: none;*/
+    }
+
+    #qq_talk_body_footer_bar {
+        bottom: 0;
+        /*bottom: 0;*/
+        /*bottom: 160;*/
+    }
+
+    .qq_talk_body_footer_face_img {
+        width: 1920px;
+        margin-left: -160px;
+        overflow: hidden;
+    }
+
+    .qq_talk_body_footer_face_img_iteam {
+        width: 320px;
+    }
+
+    .qq_talk_body_footer_face_img li {
+        background-size: 320px 130px;
+        height: 130px;
+    }
+
+    #qq_talk_body_footer_face_choose ul {
+        width: 320px;
+        margin-left: -160px;
+    }
+
+    #qq_talk_body_footer_face ul li i {
+        width: 45px;
+        height: 42px;
+    }
+}
+
+@media (min-width: 321px) {
+    #qq_talk_body_min {
+        bottom: 50px;
+        /*bottom: 225;*/
+        /*bottom: 50;*/
+    }
+
+    #qq_talk_body_footer_face {
+        margin-left: -180px;
+        width: 360px;
+        height: 175px;
+    }
+
+    #qq_talk_body_footer_face_choose {
+        height: 225px;
+        display: none;
+        /*display: none;*/
+    }
+
+    #qq_talk_body_footer_bar {
+        bottom: 0;
+        /*bottom: 0;*/
+        /*bottom: 175;*/
+    }
+
+    .qq_talk_body_footer_face_img {
+        width: 2160px;
+        margin-left: -180px;
+        overflow: hidden;
+        bottom: 30px;
+    }
+
+    .qq_talk_body_footer_face_img_iteam {
+        width: 360px;
+    }
+
+    .qq_talk_body_footer_face_img li {
+        background-size: 360px 145px;
+        height: 145px;
+    }
+
+    #qq_talk_body_footer_face_choose ul {
+        width: 360px;
+        margin-left: -180px;
+    }
+
+    #qq_talk_body_footer_face ul li i {
+        width: 51px;
+        height: 47px;
+    }
+
+    /*
+表情窗口隐藏时
+qq_talk_body_footer_face_choose和qq_talk_body_footer_face_img的display为none
+qq_talk_body_footer_bar的bottom值为0,显示为175
+qq_talk_body_min，bottom值为225，隐藏时为50
+*/
+}
+
+@media (min-width: 480px) {
+    #qq_talk_body_min {
+        bottom: 50px;
+        /*bottom: 272px;*/
+        /*bottom: 50px;*/
+    }
+
+    #qq_talk_body_footer_face {
+        margin-left: -240px;
+        width: 480px;
+        height: 222px;
+    }
+
+    #qq_talk_body_footer_face_choose {
+        height: 222px;
+        display: none;
+        /*display: block;*/
+    }
+
+    #qq_talk_body_footer_bar {
+        bottom: 0;
+        /*bottom: 222;*/
+        /*bottom: 0;*/
+    }
+
+    .qq_talk_body_footer_face_img {
+        width: 2880px;
+        margin-left: -240px;
+        overflow: hidden;
+        bottom: 30px;
+    }
+
+    .qq_talk_body_footer_face_img_iteam {
+        width: 480px;
+    }
+
+    .qq_talk_body_footer_face_img li {
+        background-size: 480px 192px;
+        height: 192px;
+    }
+
+    #qq_talk_body_footer_face_choose ul {
+        width: 480px;
+        margin-left: -240px;
+    }
+
+    #qq_talk_body_footer_face ul li i {
+        width: 68px;
+        height: 63px;
+    }
+
+    /*
+表情窗口隐藏时
+qq_talk_body_footer_face_choose和qq_talk_body_footer_face_img的display为none
+qq_talk_body_footer_bar的bottom值为0,显示为222
+qq_talk_body_min，bottom值为272，隐藏时为50
+*/
+}
+
+@media (min-width: 640px) {
+    #qq_talk_body_min {
+        bottom: 50px;
+        /*bottom: 50px;*/
+        /*bottom: 316px;*/
+    }
+
+    #qq_talk_body_footer_face {
+        margin-left: -320px;
+        width: 640px;
+        height: 286px;
+    }
+
+    #qq_talk_body_footer_face_choose {
+        height: 316px;
+        display: none;
+        /*display: block;*/
+    }
+
+    #qq_talk_body_footer_bar {
+        bottom: 0;
+        /*bottom: 0;*/
+        /*bottom: 286;*/
+    }
+
+    .qq_talk_body_footer_face_img {
+        width: 3840px;
+        margin-left: -320px;
+        overflow: hidden;
+        bottom: 30px;
+    }
+
+    .qq_talk_body_footer_face_img_iteam {
+        width: 640px;
+    }
+
+    .qq_talk_body_footer_face_img li {
+        background-size: 640px 256px;
+        height: 256px;
+    }
+
+    #qq_talk_body_footer_face_choose ul {
+        width: 640px;
+        margin-left: -320px;
+    }
+
+    #qq_talk_body_footer_face ul li i {
+        width: 91px;
+        height: 84px;
+    }
+
+    /*
+表情窗口隐藏时
+qq_talk_body_footer_face_choose和qq_talk_body_footer_face_img的display为none
+qq_talk_body_footer_bar的bottom值为0,显示为286
+qq_talk_body_min，bottom值为316，隐藏时为50
+*/
+}
+
+@media (min-width: 720px) {
+    #qq_talk_body_min {
+        bottom: 50px;
+        /*bottom: 50px;*/
+        /*bottom: 360px;*/
+    }
+
+    #qq_talk_body_footer_face {
+        margin-left: -350px;
+        width: 700px;
+        height: 310px;
+    }
+
+    #qq_talk_body_footer_face_choose {
+        height: 310px;
+        display: none;
+        /*display: block;*/
+    }
+
+    #qq_talk_body_footer_bar {
+        bottom: 0;
+        /*bottom: 0;*/
+        /*bottom: 310;*/
+    }
+
+    .qq_talk_body_footer_face_img {
+        width: 4200px;
+        margin-left: -350px;
+        bottom: 30px;
+        overflow: hidden;
+    }
+
+    .qq_talk_body_footer_face_img_iteam {
+        width: 700px;
+    }
+
+    .qq_talk_body_footer_face_img li {
+        background-size: 700px 280px;
+        height: 280px;
+    }
+
+    #qq_talk_body_footer_face_choose ul {
+        width: 700px;
+        margin-left: -350px;
+    }
+
+    #qq_talk_body_footer_face ul li i {
+        width: 99px;
+        height: 92px;
+    }
+
+    /*
+    表情窗口隐藏时
+    qq_talk_body_footer_face_choose,display为none
+    qq_talk_body_footer_bar,bottom显示310，隐藏时为0
+    qq_talk_body_min，bottom显示360，隐藏时为50
+    */
+}
+
+@media (max-height: 500px) and (min-width: 1000px) {
+    #qq_talk_body_footer_face, #qq_talk_body_footer_face_choose {
+        display: none !important;
+    }
+
+    #qq_talk_body_min {
+        bottom: 50px;
+    }
+
+    #qq_talk_body_footer_bar {
+        bottom: 0;
+    }
+}

@@ -1,0 +1,27 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#body {
+    position: relative;
+
+}
+
+.body_box {
+    padding: 15px 0 0 15px;
+    float: left;
+}
+
+.body_box_pic {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 0 6px #ccc;
+
+}
+
+.body_box_pic img {
+    width: 162px;
+    height: auto;
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>样式绑定</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <style>
+        .active {
+            width: 250px;
+            height: 150px;
+            border: 1px solid red;
+        }
+    </style>
+</head>
+
+<body>
+    <fieldset>
+        <legend>样式绑定</legend>
+        <div id="app" :class="{ active: isActive }">
+            <p :class="[arryclass1,arryclass2]">
+                <span :style="{color:spancolor,fontSize:fontSize+'px'}">v-bind样式绑定的几种方法</span>
+                <!-- <span :style="styleObject">v-bind样式绑定的几种方法</span> -->
+                <!-- 直接绑定到一个样式对象通常更好data: {styleObject: {color: 'red',fontSize: '13px'}}，这会让模板更清晰 -->
+            </p>
+        </div>
+    </fieldset>
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                isActive: true,
+                arryclass1: 'arryclass1_1',
+                arryclass2: 'arryclass2_2',
+                spancolor: 'red',
+                fontSize: '28',
+            }
+        })
+    </script>
+</body>
+
+</html>

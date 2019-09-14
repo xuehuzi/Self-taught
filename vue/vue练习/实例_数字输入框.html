@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>实例_数字输入框</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <my-componet></my-componet>
+    </div>
+    <template id="t1">
+        <div>
+            <input type="text" v-model:value="value" v-bind:max='max' v-bind:min='min' v-on:keyup.down='downa' v-on:keyup.up='upa'>
+            <button type="button" v-on:click='less' v-bind:disabled='value <= min'>-</button>
+            <button type="button" v-on:click='plus' v-bind:disabled='value >= max'>+</button>
+        </div>
+    </template>
+    <pre>
+    说明：
+    1、只能输入正整数，加减按钮每次加减1，上下箭头每次加减10，最小0最大100
+    </pre>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            components: {
+                'my-componet': {
+                    template: '#t1',
+                    data: function () {
+                        return {
+                            value: '',
+                            max: 100,
+                            min: 0,
+                            stepsize: 10//步长
+                        }
+                    },
+                    methods: {
+                        plus: function () {
+                            this.value++
+                        },
+                        less: function () {
+                            this.value--
+                        },
+                        upa: function () {
+                            if (Number(this.value) + this.stepsize <= this.max) {
+                                this.value = Number(this.value) + this.stepsize
+                            }
+                            else if (Number(this.value) === this.max) {
+                                alert('达到最大值')
+                            }
+                            else {
+                                alert('请使用按钮操作')
+                            }
+                        },
+                        downa: function () {
+                            if (Number(this.value) - this.stepsize >= this.min) {
+                                this.value = Number(this.value) - this.stepsize
+                            }
+                            else if (Number(this.value) === this.min) {
+                                alert('达到最小值')
+                            }
+                            else {
+                                alert('请使用按钮操作')
+                            }
+                        }
+                    },
+                    watch: {
+                        value: function (val, oldval) {
+                            if (Number(this.value) === 0) {//起手输入0情况
+                                this.value = ''
+                                return
+                            }
+                            else if (/\D/.test(this.value)) {//输入非数字情况
+                                alert('参数错误只能输入正整数')
+                                this.value = oldval
+                            }
+                            else {
+                                this.value = val;
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        //输入非数字即时弹出提示解决方案，通过watch监听input的value======OK
+        //起手输入0情况处理 =====OK
+    </script>
+</body>
+
+</html>

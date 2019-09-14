@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>组件通信</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+</head>
+
+<body>
+    <div>
+        <h3>几种组件通信方式</h3>
+        <p>父组件向子组件传递</p>
+        <ul>
+            <li>props：父组件可以使用props向子组件传递数据</li>
+            <li>$children：使用$children可以在父组件中访问子组件</li>
+        </ul>
+        <p>子组件向父组件通信</p>
+        <ul>
+            <li>自定义事件：父组件通过$on向子组件传递(监听)事件方法，子组件通过$emit触发事件，回调给父组件</li>
+            <li>通过修改父组件传递的props来修改父组件数据,但一般不建议直接在子组件修改父组件的数据,以下两种情况可考虑
+                <ul>
+                    <li>Prop作为初始值传入后，子组件想把它当作局部数据来用（定义一个局部变量，并用prop的值初始化它）</li>
+                    <li>Prop作为原始数据传入，由子组件处理成其它数据输出（定义一个计算属性，处理prop的值并返回）</li>
+                </ul>
+            </li>
+            <li>$parent：使用$parent可以访问父组件的数据</li>
+        </ul>
+        <p>多层级父子组件通信</p>
+        <ul>
+            <li>Vue1.0中通过$broadcast与$dispatch方法用来向子/父组件广播（或派发）事件，但这个方法在Vue2.0里被移除</li>
+        </ul>
+    </div>
+    <fieldset>
+        <legend>父子组件通信</legend>
+        <fieldset>
+            <legend>自定义事件</legend>
+            <div id="app11">
+                <h4>实例11：</h4>
+                <p>{{total}}</p>
+                <my-component v-on:increase='getson' v-on:reduce='getson'></my-component>
+            </div>
+            <template id="t11">
+                <div>
+                    <button @click='plus'>+l </button>
+                    <button @click='less'>-1</button>
+                </div>
+            </template>
+            <div id="app12">
+                <h4>实例12：</h4>
+                <p>{{total}}</p>
+                <my-component12 v-model='total'></my-component12>
+            </div>
+            <template id="t12">
+                <div>
+                    <button v-on:click='plus'>+1</button>
+                    <button v-on:click='less'>-1</button>
+                </div>
+            </template>
+            <pre>
+                实例说明：
+                1、实例11和12两个实例实现同一个功能，两个按钮(加&减)点击后实现加1减1，区别是11使用自定义事件12在组件上使用v-model实现
+                2、实例11代码说明
+                 2.1父组件自定义两个事件（increase和reduce）v-on:increase=&#x27;getson&#x27; 和 v-on:reduce=&#x27;getson&#x27;
+                 2.2子组件加减函数（plus和less）改变data内的number，然后通过this.$emit()将变化后的值传递给父组件；this.$emit()方法
+                    第一个参数是自定义事件名称（increase和reduce）后面的参数是要传递的数据，可不填或填多个逗号分隔开
+                 2.3父组件通过两个自定义事件（increase和reduce）接收子组件传递过来的值，再将接收的值赋值给total
+
+                &lt;div id=&quot;app11&quot;&gt;
+                    &lt;p&gt;{{total}}&lt;/p&gt;
+                    &lt;my-component v-on:increase=&#x27;getson&#x27; v-on:reduce=&#x27;getson&#x27;&gt;&lt;/my-component&gt;
+                &lt;/div&gt;
+                &lt;template id=&quot;t11&quot;&gt;
+                    &lt;div&gt;
+                        &lt;button @click=&#x27;plus&#x27;&gt;+l &lt;/button&gt;
+                        &lt;button @click=&#x27;less&#x27;&gt;-1&lt;/button&gt;
+                    &lt;/div&gt;
+                &lt;/template&gt;
+                var app11 = new Vue({
+                    el: &#x27;#app11&#x27;,
+                    data: {
+                        total: 0
+                    },
+                    methods: {
+                        getson: function (val) {
+                            this.total = val
+                            //val就是子组件传递到父组件的值，getson函数再将val赋值给total
+                        }
+                    },
+                    components: {
+                        &#x27;my-component&#x27;: {
+                            template: &#x27;#t11&#x27;,
+                            data: function () {
+                                return {
+                                    number: 0
+                                }
+                            },
+                            methods: {
+                                plus: function () {
+                                    this.number++
+                                    this.$emit(&#x27;increase&#x27;, this.number)
+                                },
+                                less: function () {
+                                    this.number--
+                                    this.$emit(&#x27;reduce&#x27;, this.number)
+                                }
+                            }
+                        }
+                    }
+                })
+
+                3、实例12代码说明
+                 3.1实例12父组件没有自定义指令，而是v-model直接绑定了total
+                 3.2子组件this.$emit()方法的事件名是input
+                 3.3v-model本身是一个语法糖，其原理就是利用了绑定属性和事件来实现的，具体见实例12_1
+                
+                &lt;div id=&quot;app12&quot;&gt;
+                    &lt;p&gt;{{total}}&lt;/p&gt;
+                    &lt;my-component12 v-model=&#x27;total&#x27;&gt;&lt;/my-component12&gt;
+                &lt;/div&gt;
+                &lt;template id=&quot;t12&quot;&gt;
+                    &lt;div&gt;
+                        &lt;button v-on:click=&#x27;plus&#x27;&gt;+1&lt;/button&gt;
+                        &lt;button v-on:click=&#x27;less&#x27;&gt;-1&lt;/button&gt;
+                    &lt;/div&gt;
+                &lt;/template&gt;
+                var app12 = new Vue({
+                    el: &#x27;#app12&#x27;,
+                    data: {
+                        total: 0
+                    },
+                    components: {
+                        &#x27;my-component12&#x27;: {
+                            template: &#x27;#t12&#x27;,
+                            data: function () {
+                                return {
+                                    number: 0
+                                }
+                            },
+                            methods: {
+                                plus: function () {
+                                    this.number++
+                                    this.$emit(&#x27;input&#x27;, this.number)
+                                },
+                                less: function () {
+                                    this.number--
+                                    this.$emit(&#x27;input&#x27;, this.number)
+                                }
+                            }
+                        }
+                    }
+                })
+            </pre>
+        </fieldset>
+        <fieldset>
+            <legend>在组件中使用v-model</legend>
+            <div id="app12_1">
+                <h4>实例12_1：</h4>
+                <input type="text" v-bind:value="text" v-on:input="changeValue($event.target.value)"> {{text}}
+                <pre>
+                &lt;div id=&quot;app12_1&quot;&gt;
+                    &lt;input type=&quot;text&quot; v-bind:value=&quot;text&quot; v-on:input=&quot;changeValue($event.target.value)&quot;&gt; {{text}}
+                &lt;/div&gt;
+                • 把input的value绑定到Vue实例的属性text上，text改变，input中的内容也会改变
+                • 然后把表单的input事件处理函数设置为Vue实例的一个方法，这个方法会根据输入参数改变Vue中text的值
+                • 相应的，在input中输入内容时，触发了input事件，把event.target.value传给这个方法，最后就实现了改变绑定的数据的效果。
+                </pre>
+            </div>
+            <div id="app13">
+                <h4>实例13：</h4>
+                <span>{{total}}</span>
+                <button v-on:click='myclick'>+1</button>
+                <my-component13 v-model='total'></my-component13>
+            </div>
+            <template id="t13">
+                <input type="number" v-on:input='sonclick' v-bind:value='value'></input>
+            </template>
+            <div id="app14">
+                <div>
+                    <h4>实例14：</h4>
+                    <span>父：{{value}}</span>
+                    <input type="text" v-model='value'>
+                </div>
+                <my-component14 v-model="value"></my-component14>
+            </div>
+            <template id="t14">
+                <div>
+                    <span>子：{{childvalue}}</span>
+                    <input type="text" v-model='childvalue'>
+                </div>
+            </template>
+            <pre>
+            实现一个具有双向绑定的 v-model 组件要满足下面两个要求 ：
+            • 将其 value 特性绑定到一个名叫 value 的 prop 上
+            • 在其 input 事件被触发时，将新的值通过自定义的 input 事件抛出
+            v-model 其实是一个语法糖，这背后其实做了两个操作
+            • v-bind 绑定一个 value 属性
+            • v-on 指令给当前元素绑定 input 事件
+            在原生表单元素中
+            &lt;input v-model=&#x27;something&#x27;&gt;
+            相当于,其原理是当input接收到新的输入，就会触发input事件，将事件目标的value 值赋给绑定的元素
+            &lt;input v-bind:value=&quot;something&quot; v-on:input=&quot;something = $event.target.value&quot;&gt;
+            在自定义组件中
+            &lt;my-component v-model=&#x27;something&#x27;&gt;&lt;/my-componment&gt;
+            相当于
+            &lt;my-component v-bind:value=&#x27;something&#x27; v-on:input=&#x27;something = arguments[0]&#x27;&gt;&lt;/my-component&gt;
+            </pre>
+        </fieldset>
+    </fieldset>
+    <fieldset>
+        <legend>中央事件总线通信</legend>
+        <h4>实例15(父子关系)：</h4>
+        <div id="app15">
+            <p>{{message}}</p>
+            <p>{{message1}}</p>
+            <my-component15></my-component15>
+        </div>
+        <template id="t15">
+            <div>
+                <button v-on:click='handevent'>传递事件</button>
+            </div>
+        </template>
+        <h4>实例16(兄弟关系)：</h4>
+        <div id="app16">
+            <my-component16a></my-component16a>
+            <my-component16b></my-component16b>
+        </div>
+        <template id="t16a">
+            <div>
+                <button @click="emita">组件A{{ infoa }}</button>
+            </div>
+        </template>
+        <template id="t16b">
+            <div>
+                <button @click="emitb">组件B{{ infob }}</button>
+            </div>
+        </template>
+        <pre>
+        通信流程：
+        1、先确定通信双方哪一方是信息发送方，哪一方是信息接收方
+        2、信息发送方通过bus.$emit('自定义事件名')将信息发送出去
+        3、信息接收方，在其组件实例化的时候，也就是在生命周期mounted钩子函数里监听来自bus的事件
+           bus.$on('自定义事件名'，function(){
+              //然后执行什么你自己懂的
+           })
+
+        知识点：
+        1、中央事件总线这种方法巧妙而轻量地实现了任何组件间的通信，包括父子、兄弟、跨级
+        2、而且 Vue 1.x 和Vue 2.x 都适用 。如果深入使用，可以扩展 bus 实例，给它添加 data 、 methods、 computed 等选项这些都是可以公用的
+           在业务中，尤其是协同开发时非常有用，因为经常需要共享一些通用的信息，比如用户登录的昵称、性别、邮箱等，还有用户的授权token等只
+           需在初始化时让 bus 获取一次，任何时间、任何组件就可以从中直接使用了，在单页面富应用（ SPA ）中会很实用。
+        3、当你的项目比较大，有更多的小伙伴参与开发时，也可以选择更好的状态管理解决方案vuex，
+
+        实例说明app15：
+        1、首先创建了 一个名为 bus 的空 Vue 实例，里面没有任何内容
+        3、挂载Vue实例app15（确定该vue实例是信息接收方），在vue实例初始化时，在其生命周期 mounted 钩子函数里监听来自bus的事件
+           自定义事件名onmessage，并通过回调函数获取，子组件发送过来的信息，***注意mounted钩子函数内this问题***
+        2、注册局部组件my-component15（确定子组件是信息发送方）,子组件通过
+           bus.$emit('自定义事件名onmessage', '中央bus总线','中央bus总线123')将信息发送给父(实例/组件)
+
+        var bus = new Vue()
+        var app15 = new Vue({
+            el: &#x27;#app15&#x27;,
+            data: {
+                message: &#x27;&#x27;,
+                message1: &#x27;&#x27;
+            },
+            mounted: function () {
+                var that = this
+                bus.$on(&#x27;onmessage&#x27;, function (msg,msg1) {
+                    that.message = msg
+                    that.message1 = msg1
+                })
+            },
+            components: {
+                &#x27;my-component15&#x27;: {
+                    template: &#x27;#t15&#x27;,
+                    methods: {
+                        handevent: function () {
+                            bus.$emit(&#x27;onmessage&#x27;, &#x27;中央bus总线1&#x27;,&#x27;中央bus总线12&#x27;)
+                        }
+                    }
+                }
+            }
+        })
+        </pre>
+    </fieldset>
+    <fieldset>
+        <legend>$children $parent $refs</legend>
+        <h4>实例17：使用$children在父组件中访问子组件</h4>
+        <div id="app17">
+            <my-component17></my-component17>
+        </div>
+        <template id="my-component17">
+            <div>
+                <my-component17-1></my-component17-1>
+                <my-component17-2></my-component17-2>
+                <button v-on:click="showChildComponentData">显示子组件的数据</button>
+            </div>
+        </template>
+        <template id="my-component17-1">
+            <div>
+                <p>子组件1</p>
+            </div>
+        </template>
+        <template id="my-component17-2">
+            <div>
+                <p>子组件2</p>
+            </div>
+        </template>
+        <h4>实例18：使用$parent在子组件中访问父组件</h4>
+        <div id="app18">
+            <my-component18></my-component18>
+        </div>
+        <template id="t18">
+            <div>
+                <span>父组件</span>
+                <my-component18-1></my-component18-1>
+            </div>
+        </template>
+        <template id="t18-1">
+            <div>
+                <button v-on:click="showParentComponentData">子组件</button>
+                <my-component18-2></my-component18-2>
+            </div>
+        </template>
+        <template id="t18-2">
+            <div>
+                <button v-on:click="showParentComponentData">孙组件</button>
+            </div>
+        </template>
+        <!--  -->
+        <pre>
+        1、需要注意 $children 并不保证顺序，也不是响应式的。如果你发现自己正在尝试使用 $children 来进行数据绑定，考虑使用一个数组配合 v-for 来生成子组件
+           并且使用 Array 作为真正的来源。
+        2、$children可访问它所有的子组件，而且可以递归向上或向下无限访问， 直到根实例或最内层的组件
+        3、虽然$children和$parent能访问父/子组件的数据，但尽量避免在子组件修改父组件数据，尽量使用props向子组件传数据，尽量保证组件自己修改自己的状态
+        </pre>
+        <h4>实例19：$refs子组件索引</h4>
+        <div id='app19'>
+            <my-component19></my-component19>
+        </div>
+        <template id="t19">
+            <div>
+                <my-component19-1 ref='t19A'></my-component19-1>
+                <my-component19-2 ref='t19B'></my-component19-2>
+                <button @click='getrefs'>通过 ref 获取子组件实例</button>
+            </div>
+        </template>
+        <template id="t19-1">
+            <div>子组件1</div>
+        </template>
+        <template id="t19-2">
+            <div>子组件2</div>
+        </template>
+        <pre>
+        1、当子组件过多时通过 this.$children 来一一遍历出我们需要的一个组件实例是比较困难，尤其是组件动态渲染时，它们的序列是不固定的
+           Vue 提供了子组件索引的方法，用特殊的属性ref来为子组件指定一个索引名称
+        2、子组件标签上使用 ref 指定一个名称，井在父组件内通过 this.$refs 来访问指定名称的子组件
+        3、$refs只在组件渲染完成后才填元，并且它是非响应式的，它仅仅作为一个直接访问子组件的应急方案，应当避免在模板或计算属性中使$refs
+
+        &lt;template id=&quot;t19&quot;&gt;
+        &lt;div&gt;
+            &lt;my-component19-1 ref=&#x27;t19A&#x27;&gt;&lt;/my-component19-1&gt;
+            &lt;my-component19-2 ref=&#x27;t19B&#x27;&gt;&lt;/my-component19-2&gt;
+            &lt;button @click=&#x27;getrefs&#x27;&gt;通过 ref 获取子组件实例&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;/template&gt;
+        &lt;template id=&quot;t19-1&quot;&gt;...&lt;/template&gt;
+        &lt;template id=&quot;t19-2&quot;&gt;...&lt;/template&gt;
+
+        var app = new Vue({
+            el: &#x27;#app19&#x27;,
+            components: {
+                &#x27;my-component19&#x27;: {
+                    template: &#x27;#t19&#x27;,
+                    components: {
+                        &#x27;my-component19-1&#x27;: {
+                            //...
+                        },
+                        &#x27;my-component19-2&#x27;: {
+                            //...
+                        }
+                    },
+                    methods: {
+                        getrefs: function () {
+                            console.log(this.$refs.t19A.msg);
+                            console.log(this.$refs.t19B.msg);
+                        }
+                    }
+                }
+            }
+        })
+        </pre>
+    </fieldset>
+    <script>
+
+        var app11 = new Vue({
+            el: '#app11',
+            data: {
+                total: 0
+            },
+            methods: {
+                getson: function (val) {
+                    this.total = val
+                }
+            },
+            components: {
+                'my-component': {
+                    template: '#t11',
+                    data: function () {
+                        return {
+                            number: 0
+                        }
+                    },
+                    methods: {
+                        plus: function () {
+                            this.number++
+                            this.$emit('increase', this.number)
+                        },
+                        less: function () {
+                            this.number--
+                            this.$emit('reduce', this.number)
+                        }
+                    }
+                }
+            }
+        })
+        var app12 = new Vue({
+            el: '#app12',
+            data: {
+                total: 0
+            },
+            components: {
+                'my-component12': {
+                    template: '#t12',
+                    data: function () {
+                        return {
+                            number: 0
+                        }
+                    },
+                    methods: {
+                        plus: function () {
+                            this.number++
+                            this.$emit('input', this.number)
+                        },
+                        less: function () {
+                            this.number--
+                            this.$emit('input', this.number)
+                        }
+                    }
+                }
+            }
+        })
+        var app12_1 = new Vue({
+            el: '#app12_1',
+            data: {
+                text: '1'
+            },
+            methods: {
+                changeValue(value) {
+                    this.text = value
+                }
+            }
+        })
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        var app13 = new Vue({
+            el: '#app13',
+            data: {
+                total: 1
+            },
+            methods: {
+                myclick: function () {
+                    this.total++
+                }
+            },
+            components: {
+                'my-component13': {
+                    template: '#t13',
+                    props: ['value'],
+                    methods: {
+                        sonclick: function (e) {
+                            this.$emit('input', e.target.value)
+                            console.log(typeof e.target.value)
+                        }
+                    }
+                }
+            }
+        })
+        var app14 = new Vue({
+            el: '#app14',
+            data: {
+                value: '',
+            },
+            components: {
+                'my-component14': {
+                    template: '#t14',
+                    props: ['value'],
+                    data: function () {
+                        return {
+                            childvalue: this.value
+                        }
+                    },
+                    watch: {
+                        value: function (val) {
+                            this.childvalue = val;
+                        },
+                        childvalue: function (val) {
+                            this.$emit('input', this.childvalue)
+                        }
+                    }
+                }
+            }
+        })
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        var bus = new Vue()
+        var app15 = new Vue({
+            el: '#app15',
+            data: {
+                message: '',
+                message1: ''
+            },
+            mounted: function () {
+                var that = this
+                bus.$on('onmessage', function (msg, msg1) {
+                    that.message = msg
+                    that.message1 = msg1
+                })
+            },
+            components: {
+                'my-component15': {
+                    template: '#t15',
+                    methods: {
+                        handevent: function () {
+                            bus.$emit('onmessage', '中央bus总线1', '中央bus总线12')
+                        }
+                    }
+                }
+            }
+        })
+
+        var bus16 = new Vue()
+        Vue.component('my-component16a', {
+            template: '#t16a',
+            data: function () {
+                return {
+                    infoa: ''
+                }
+            },
+            mounted: function () {
+                var that = this
+                bus16.$on('anotherclicka', function () {
+                    that.infoa = '“你点我兄弟B了”';
+                })
+            },
+            methods: {
+                emita() {
+                    bus16.$emit('anotherclickb')
+                }
+            }
+        })
+        Vue.component('my-component16b', {
+            template: '#t16b',
+            //
+            data: function () {
+                return {
+                    infob: ''
+                }
+            },
+            mounted: function () {
+                var that = this
+                bus16.$on('anotherclickb', function () {
+                    that.infob = '“你点我兄弟A了”';
+                })
+            },
+
+            methods: {
+                emitb() {
+                    bus16.$emit('anotherclicka')
+                }
+            }
+        })
+        var vm = new Vue({
+            el: '#app16'
+        })
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        var app17 = new Vue({
+            el: '#app17',
+            components: {
+                'my-component17': {
+                    template: '#my-component17',
+                    components: {
+                        'my-component17-1': {
+                            template: '#my-component17-1',
+                            data: function () {
+                                return {
+                                    msg: '子组件1'
+                                }
+                            }
+                        },
+                        'my-component17-2': {
+                            template: '#my-component17-2',
+                            data: function () {
+                                return {
+                                    msg: '子组件2'
+                                }
+                            }
+                        }
+                    },
+                    methods: {
+                        showChildComponentData: function () {
+                            for (var i = 0; i < this.$children.length; i++) {
+                                alert(this.$children[i].msg)
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        var app18 = new Vue({
+            el: '#app18',
+            components: {
+                'my-component18': {
+                    template: '#t18',
+                    data: function () {
+                        return {
+                            msg: '我是父组件的msg'
+                        }
+                    },
+                    components: {
+                        'my-component18-1': {
+                            template: '#t18-1',
+                            data: function () {
+                                return {
+                                    msg: '我是子组件的msg'
+                                }
+                            },
+                            methods: {
+                                showParentComponentData: function () {
+                                    alert(this.$parent.msg)
+                                }
+                            },
+                            components: {
+                                'my-component18-2': {
+                                    template: '#t18-2',
+                                    methods: {
+                                        showParentComponentData: function () {
+                                            alert(this.$parent.msg)
+                                        }
+                                    },
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        var app19 = new Vue({
+            el: '#app19',
+            components: {
+                'my-component19': {
+                    template: '#t19',
+                    components: {
+                        'my-component19-1': {
+                            template: '#t19-1',
+                            data: function () {
+                                return {
+                                    msg: '子组件msg-1'
+                                }
+                            }
+                        },
+                        'my-component19-2': {
+                            template: '#t19-2',
+                            data: function () {
+                                return {
+                                    msg: '子组件msg-2'
+                                }
+                            }
+                        }
+                    },
+                    methods: {
+                        getrefs: function () {
+                            console.log(this.$refs.t19A.msg);
+                            console.log(this.$refs.t19B.msg);
+                        }
+                    }
+                }
+            }
+        })
+/*
+组件通信
+父子组件通信
+*父组件向子组件通信props和$children
+*子组件向父组件通信（自定义事件，使用$parent，通过修改父组件传递的props来修改父组件数据）
+非父子组件、兄弟组件之间通信
+*Vue官方推荐使用一个Vue实例作为中央事件总线
+*通过$on方法用来监听一个事件
+*通过$emit用来触发一个事件
+*/
+
+
+
+
+
+    </script>
+</body>
+
+</html>
