@@ -6,98 +6,149 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>计算属性及侦听器</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 
 <body>
-    <fieldset>
-        <legend>方式1：模板内表达式</legend>
-        <div id="app">
-            <P>{{ message.split('').reverse().join('') }}</P>
-            <span v-pre>上面内容是直接在插值语法内写逻辑{{ message.split('').reverse().join('') }}</span>
-        </div>
-    </fieldset>
-    <fieldset>
-        <legend>方式2：computed内计算属性</legend>
-        <div id="app1">
-            <p>正常: "{{ message }}"</p>
-            <p>翻转: "{{ reversedMessage }}"</p>
-            <span v-pre>这是在computed:{reversedMessage: function () {return this.message.split('').reverse().join('')}}</span>
-        </div>
-    </fieldset>
-    <fieldset>
-        <legend>方式3：通过方法实现</legend>
-        <div id="app2">
-            <p>{{message}}</p>
-            <p>{{reversedMessage()}}</p>
-            <span v-pre>翻转绑定的是{{reversedMessage()}}，methods内调用reversedMessage()方法实现</span>
-        </div>
-    </fieldset>
-    <fieldset>
-        <legend>依赖其他计算属性</legend>
-        <div id="app3">
-            {{text}}
-        </div>
-        <div id="app4">
-            {{reversedMessage}}
-            <p>两个vue实例app3和app4,在app4内计算属性依赖的是app3的数据text</p>
-        </div>
-    </fieldset>
-    <script>
-        var app = new Vue({
-            el: '#app',
-            data: {
-                message: '你好vue'
-            }
-        })
-        var app1 = new Vue({
-            el: '#app1',
-            data: {
-                message: '你好VUE'
-            },
-            computed: {
-                // 计算属性的 getter
-                reversedMessage: function () {
-                    return this.message.split('').reverse().join('')
-                }
-            }
-        })
-        var app2 = new Vue({
-            el: '#app2',
-            data: {
-                message: '你好VUE'
-            },
-            methods: {
-                reversedMessage: function () {
-                    return this.message.split('').reverse().join('')
-                }
-            }
-        })
+<fieldset>
+    <legend>方式1：模板内表达式</legend>
+    <div id="app">
+        <P>{{ message.split('').reverse().join('') }}</P>
+        <span v-pre>上面内容是直接{{}}内写逻辑{{ message.split('').reverse().join('') }}</span>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>方式2：computed通过计算属性实现</legend>
+    <div id="app1">
+        <p>{{ message }}</p>
+        <p>{{ reversedMessage }}</p>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>方式3：methods通过方法实现</legend>
+    <div id="app2">
+        <p>{{message}}</p>
+        <p>{{reversedMessage()}}</p>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>也可以调用其他vue实例data内的数据</legend>
+    <div id="app3">
+        {{text}}
+    </div>
+    <div id="app4">
+        {{reversedMessage}}
+        <p>两个vue实例app3和app4,在app4内计算属性依赖的是app3的数据text</p>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>5555555</legend>
+    <div id="app5">
+        <p>text：{{text}}</p>
+        <p>属性拿到的时间戳{{test_1}}</p>
+        <p>方法拿到的时间戳{{test_2()}}</p>
+        <p>1、控制台修改text值，会发现方法的时间戳随着text值变化而变化，而计算属性的时间戳并没有变化</p>
+        <p>2、computed和methods各自函数内都没引用text值，但修改text值会引起页面重新渲染</p>
+        <p>3、computed只要计算属性依赖的数据未发生变化，就永远不变；methods只要页面重新渲染，方法就会重新执行</p>
+    </div>
+</fieldset>
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {
+            message: '你好vue'
+        }
+    });
 
-        var app3 = new Vue({
-            el: '#app3',
-            data: {
-                text: '123,456'
-            }
-        })
-        var app4 = new Vue({
-            el: '#app4',
-            computed: {
-                reversedMessage: function () {
-                    return app3.text.split(',').reverse().join(',');
+    let app1 = new Vue({
+        el: '#app1',
+        data: {
+            message: '你好VUE'
+        },
+        computed: {
+            // 计算属性的 getter
+            // reversedMessage: function () {
+            //     return this.message.split('').reverse().join('')
+            // }
+            reversedMessage://和reversedMessage: function (){}是相等的，计算属性如果不声明get和set则默认的函数就说get
+                {
+                    get: function () {
+                        return this.message.split('').reverse().join('')
+                    },
+                    set: function (value) {
+                        console.log('set被调用了');
+                        //控制台输入app1.reversedMessage = '你好123'就会打印'set被调用了'
+                        this.message = value
+                    }
                 }
+        }
+    });
+
+    let app2 = new Vue({
+        el: '#app2',
+        data: {
+            message: '你好VUE'
+        },
+        methods: {
+            reversedMessage: function () {
+                return this.message.split('').reverse().join('')
             }
-        })
-        /* 
-        几种实现方式区别
-        1、模板内的表达式非常便利，但是设计它们的初衷是用于简单运算的。在模板中放入太多的逻辑会让模板过重且难以维护
-        2、对于任何复杂逻辑，都应当使用计算属性computed
-        3、通过在表达式中调用方法（methods）也可实现内容翻转的效果，但是通过方法实现和计算属性实现有以下的区别
-          计算属性是基于它们的依赖进行缓存的，计算属性只有在它的相关依赖发生改变时才会重新求值
-          （譬如本例子中的message发生变化reversedMessage才会跟着变化，多次访问reversedMessage计算属性会立即返回之
-          相比之下每当触发重新渲染时，调用方法将总会再次执行函数
-         */
-    </script>
+        }
+    });
+
+    let app3 = new Vue({
+        el: '#app3',
+        data: {
+            text: '123,456'
+        }
+    });
+
+    let app4 = new Vue({
+        el: '#app4',
+        computed: {
+            reversedMessage: function () {
+                return app3.text.split(',').reverse().join(',');
+            }
+        }
+    });
+
+    let app5 = new Vue({
+        el: '#app5',
+        data: {
+            text:'1234456'
+        },
+        computed: {
+            test_1:function () {
+                return Date.now();
+            }
+        },
+        methods: {
+            test_2:function () {
+                return Date.now();
+            }
+        }
+    })
+
+
+    /*
+    * >>>模板内和使用计算属性区别
+    * 1、模板内的表达式非常便利，但是设计它们的初衷是用于简单运算的。在模板中放入太多的逻辑会让模板过重且难以维护
+    * 2、对于任何复杂逻辑，都应当使用计算属性computed
+    *
+    * >>> computed计算属性和methods方法区别
+    * 在一个计算属性里可以完成各种复杂的逻辑，包括运算、函数调用等，只要最终返回一个结果就可以
+    * 调用方法：只要页面重新渲染，方法就会重新执行。
+    * 计算属性：不管渲染不渲染，只要计算属性依赖的数据未发生变化，就永远不变
+    * 计算属性：不仅可以依赖当前 Vue 实例的数据，还可以依赖其他实例的数据（详见例子app4调用app3的数据）
+    * 调用区别：方法调用时需要加括号{{abv1()}}，属性调用不需要括号{{abv2}}
+    * 何时使用: 取决于是否需要缓存，当遍历大数组和做大量计算时，应当使用计算属性。
+    *
+    * >>> getter和setter
+    * 计算属性，默认用法是getter函数。
+    * 需要时，也提供一个 se忧er 函数 ， 当手动修改计算属性的值就像修改数据时，会触发 setter函数
+    *
+    * */
+</script>
 </body>
 
 </html>

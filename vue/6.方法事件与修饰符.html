@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>方法事件与修饰符</title>
+    <style>
+        .active {
+            width: 200px;
+            height: 200px;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+<fieldset>
+    <legend>方法事件</legend>
+    <div id="app">
+        <div>
+            <p>{{numb}}</p>
+            <button @click="plus()">点击加1</button>
+            <button @click="plus(5)">点击加5</button>
+            <p>@click="plus()"</p>
+            <p>@click="plus(5)"</p>
+            <p>{{msg}}</p>
+            <p>方法调用传参且加了括号</p>
+        </div>
+        <div>
+            <p>{{numb1}}</p>
+            <button @click="plus1">按钮一</button>
+            <p>@click="plus1"</p>
+            <p>{{msg2}}</p>
+            <p>方法调用传参但没加括号</p>
+        </div>
+        <div>
+            <p>{{numb2}}</p>
+            <button @click="plus2">按钮一</button>
+            <p>@click="plus2"</p>
+            <p>{{msg3}}</p>
+            <p>方法调用，不传参时，可以不加括号</p>
+        </div>
+
+    </div>
+</fieldset>
+<fieldset>
+    <legend>修饰符.stop .self</legend>
+    <div id="app1">
+        <div @click="divclick()" :class="{active:classflg}">
+            <button @click="btnclick()">子元素</button>
+        </div>
+        <p>@click="btnclick()"点击子元素btn时父元素div的点击事件也会触发（事件冒泡）</p>
+    </div>
+    <div id="app2">
+        <div @click.self="divclick()" :class="{active:classflg}">
+            <button @click="btnclick()">子元素</button>
+        </div>
+        <p>@click.self="divclick()"给父元素加了.self后也不会将子元素事件传递到父元素</p>
+    </div>
+    <div id="app3">
+        <div @click="divclick()" :class="{active:classflg}">
+            <button @click.stop="btnclick()">子元素</button>
+        </div>
+        <p>@click.stop="btnclick()"加了修饰符后不会将子元素事件传递到父元素</p>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>修饰符.prevent</legend>
+    <div id="app4">
+        <form @submit.prevent="sub" action="">
+            <label>
+                name
+                <input type="text">
+            </label>
+            <button type="submit">提交</button>
+        </form>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>修饰符.once</legend>
+    <div id="app5">
+        <p>{{msg}}</p>
+        <button @click="pull()">点击就会执行</button>
+        <button @click.once="pull()">只会执行一次</button>
+        <p>@click.once，加once后绑定的事件只会执行1次</p>
+    </div>
+</fieldset>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            numb: 0,
+            numb1: 0,
+            numb2: 0,
+            msg: `
+            plus: function (val) {
+                val = val || 1;
+                this.numb += val
+            }
+            `,
+            msg2: `
+            plus1:function (val) {
+                val = val || 1;
+                this.numb1 += val
+            }
+            `,
+            msg3: `
+            plus2:function () {
+                this.numb2 += 1
+            }
+            `
+        },
+        methods: {
+            plus: function (val) {
+                val = val || 1;
+                this.numb += val
+            },
+            plus1: function (val) {
+                val = val || 1;
+                this.numb1 += val
+            },
+            plus2: function () {
+                this.numb2 += 1
+            }
+        }
+    });
+    /*
+    * 方法调用时，可以加()也可以不加()
+    * 区别在于方法的函数是否有传参，如果有参数但没加()，会将原生event对象传进去
+    *
+    * */
+    let app1 = new Vue({
+        el: '#app1',
+        data: {
+            classflg: true,
+        },
+        methods: {
+            divclick: function () {
+                alert('我是div')
+            },
+            btnclick: function () {
+                alert('我是btn')
+            }
+        }
+    });
+    let app2 = new Vue({
+        el: '#app2',
+        data: {
+            classflg: true,
+        },
+        methods: {
+            divclick: function () {
+                alert('我是div')
+            },
+            btnclick: function () {
+                alert('我是btn')
+            }
+        }
+    });
+    let app3 = new Vue({
+        el: '#app3',
+        data: {
+            classflg: true,
+        },
+        methods: {
+            divclick: function () {
+                alert('我是div')
+            },
+            btnclick: function () {
+                alert('我是btn')
+            }
+        }
+    });
+    let app4 = new Vue({
+        el: '#app4',
+        methods: {
+            sub: function () {
+                alert('不刷新了')
+            }
+        }
+    });
+
+    let app5 = new Vue({
+        el: '#app5',
+        data: {
+            msg: 0
+        },
+        methods: {
+            pull: function () {
+                this.msg += 1
+            }
+        }
+    })
+</script>
+</body>
+</html>

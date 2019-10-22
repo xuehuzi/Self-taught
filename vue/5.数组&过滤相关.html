@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>数组&过滤相关</title>
+
+</head>
+<body>
+<div id="app">
+    <p>{{arr}}</p>
+    <button @click="del">arr[0]索引方式修改</button>
+    <button @click="mylength">改变数组长度</button>
+    <p>arr[0]索引方式修改数组元素，vue无法检测到</p>
+    <p>arr.length直接修改，vue也无法检测到</p>
+    <button @click="mysplice">通过splice修改指定值</button>
+    <button @click="dellength">通过splice修改指长度</button>
+    <p>数组过滤：{{matcharr}}</p>
+    <p>数组过滤：{{matcharr123()}}</p>
+    <!--<button @click="arrfilter">数组过滤</button>-->
+</div>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            arr: [1, 2, 3, 'helo', 'runoo']
+        },
+        methods: {
+            del: function () {
+                this.arr[0] = '一'
+            },
+            mylength: function () {
+                this.arr.length = 0
+            },
+            mysplice: function () {
+                this.arr.splice(0, 1, '零')
+            },
+            dellength: function () {
+                this.arr.splice(2)
+            },
+            matcharr123: function () {
+                return this.arr.filter(function (val) {
+                        if (typeof val === 'string') {
+                            return val.match(/oo/)
+                        }
+                    }
+                )
+            }
+        },
+        computed: {
+            matcharr: function () {//过滤
+                return this.arr.filter(function (val) {
+                        if (typeof val === 'string') {
+                            return val.match(/oo/)
+                        }
+                    }
+                )
+            }
+        },
+    })
+</script>
+</body>
+</html>
