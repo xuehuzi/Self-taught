@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>v-model数据绑定</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+<div style="border: 2px solid brown;padding: 10px">
+    <h3>基础用法</h3>
+    <fieldset>
+        <legend>v-model</legend>
+        <div id="app">
+            {{msg}}
+            <input type="text" value="dqweqweqwe" v-model="msg">
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>单个单选框</legend>
+        <div id="app1">
+            苹果<input type="radio" v-bind:checked="checked">
+            香蕉<input type="radio" v-model="checked">
+        </div>
+        <p>1、示例用v-bind和v-model都绑定checked，checked设为true时只有v-bind的生效</p>
+        <p>2、单个单选框的需求时，直接v-bind绑定一个布尔值即可</p>
+    </fieldset>
+    <fieldset>
+        <legend>多个单选框</legend>
+        <div id="app2">
+            <label>
+                苹果
+                <input type="radio" name="name" value="苹果" v-model="check">
+            </label>
+            <label>
+                香蕉
+                <input type="radio" name="name" value="香蕉" v-model="check">
+            </label>
+            <label>
+                芒果
+                <input type="radio" name="name" value="芒果" v-model="check">
+            </label>
+            <span>     ___________当前选中是：{{check}}</span>
+            <p>1、多个单选框，可使用v-model结合value使用</p>
+            <p>2、v-model绑定数据的值写上对应的value默认即可选中</p>
+            <p>3、{{msg}}</p>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>单个复选框</legend>
+        <div id="app3">
+            <label>
+                苹果<input type="checkbox" v-bind:checked="checked">
+            </label>
+            <label>
+                香蕉<input type="checkbox" v-model="checked">
+            </label>
+            <p>1、单个复选框直接绑定一个布尔值即可，使用v-bind或v-model都可以</p>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>多个复选框</legend>
+        <div id="app4">
+            <div>
+                <label>
+                    苹果<input type="checkbox" value="苹果" v-model="checks">
+                </label>
+                <label>
+                    香蕉<input type="checkbox" value="香蕉" v-model="checks">
+                </label>
+                <label>
+                    芒果<input type="checkbox" value="芒果" v-model="checks">
+                </label>
+                <span>___________当前选中：{{checks}}</span>
+            </div>
+            <div>
+                <label>
+                    苹果<input type="checkbox" value="苹果" v-model="checkss">
+                </label>
+                <label>
+                    香蕉<input type="checkbox" value="香蕉" v-model="checkss">
+                </label>
+                <label>
+                    芒果<input type="checkbox" value="芒果" v-model="checkss">
+                </label>
+                <span>___________当前选中：{{checkss}}</span>
+            </div>
+            <p>1、多个复选框需要v­model来配合value使用</p>
+            <p>2、如果绑定的是数组，则选中的是含有该value的属性对应</p>
+            <p>3、如果绑定的是字符串，则会转化为true或false，与所有绑定的复选框的checked属性相对应（即全选或全不选）</p>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>单选下拉框</legend>
+        <div id="app5">
+            <select v-model="checks">
+                <option value="苹果">苹果</option>
+                <option value="香蕉">香蕉</option>
+                <option value="芒果">芒果</option>
+            </select>
+            <span>当前选中：{{checks}}</span>
+            <p>1、单选下拉框，不管绑定数组还是字符串，都只会与当前选中的value绑定</p>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>多选下拉框</legend>
+        <div id="app6">
+            <select v-model="checks" multiple>
+                <option value="苹果">苹果</option>
+                <option value="香蕉">香蕉</option>
+                <option value="芒果">芒果</option>
+            </select>
+            <span>当前选中：{{checks}}</span>
+            <p>1、单选下拉框，不管绑定数组还是字符串，都只会与当前选中的value绑定</p>
+            <p>2、多选下拉框，不管绑定数组还是字符串，会自动转为数组后去匹配当前都选中了那些value</p>
+            <p>3、下拉框的v-model需绑定在select标签</p>
+        </div>
+    </fieldset>
+    <h3>建议所有单选（单选下拉、单个单选、单个复选）初始化绑定的数据为字符串，此时v-mode绑定的是布尔值或静态字符串</h3>
+    <h3>建议所有多选（多选下拉、多个单选、多个复选）初始化绑定的数据为数组</h3>
+</div>
+<div style="border: 2px solid brown;padding: 10px;margin-top: 25px">
+    <h3>值绑定</h3>
+    <fieldset>
+        <legend>绑定值：单选</legend>
+        <div id="app7">
+            <label>
+                苹果<input type="radio" v-model="check" v-bind:value="value">
+            </label>
+            <span>值是：{{check}}</span>
+            <p>当用v-bind绑定一个单个单选框value值，此时v-model绑定的就是v­bind绑定的value值</p>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>绑定值：复选</legend>
+        <div id="app8">
+            <label>
+                选中和没选的值是不同的<input type="checkbox" v-model="value" :true-value="value1" :false-value="value2">
+            </label>
+            <p>选择结果：{{value}}</p>
+            <p>选中{{value == value1}}</p>
+            <p>没选{{value == value2}}</p>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>绑定值：下拉框</legend>
+        <div id="app9">
+            <select v-model="selectvalue">
+                <option :value="{name:'苹果'}">苹果</option>
+                <option :value="{name:'香蕉'}">香蕉</option>
+                <option>芒果</option>
+            </select>
+            <p>选中类型：{{typeof selectvalue}}</p>
+            <p>对象名字：{{selectvalue.name}}</p>
+        </div>
+    </fieldset>
+</div>
+<div style="border: 2px solid brown;padding: 10px;margin-top: 25px">
+    <h3>修饰符</h3>
+    <fieldset>
+        <legend>lazy：更改v-model绑定数据更新方式</legend>
+        <div id="app10">
+            <div>
+                <input type="text" v-model="msg">
+                <span>输入内容是：{{msg}}</span>
+            </div>
+            <div>
+                <input type="text" v-model.lazy="msg1">
+                <span>输入内容是：{{msg1}}</span>
+            </div>
+        </div>
+        <p>1、通过例子可以看出数据更新时机不同</p>
+        <p>2、第一个没有使用修饰符lazy，所以是实时更新，只要输入就会更新</p>
+        <p>3、第二个给v-model加了lazy修饰符，只有在input失去焦点或者点了回车后才会更新</p>
+    </fieldset>
+    <fieldset>
+        <legend>number：将输入的字符串数字转化为number类型</legend>
+        <div id="app11">
+            <div>
+                <input type="text" v-model="msg">
+                <span>输入类型是：{{typeof msg}}</span>
+            </div>
+            <div>
+                <input type="text" v-model.number="msg1">
+                <span>输入类型是：{{typeof msg1}}</span>
+            </div>
+        </div>
+        <p>1、第一个输入数字显示类型是string，第二个输入数字显示类型是number</p>
+        <p>2、第二个给v-model加了number修饰符，会将输入的字符串数字转为number类型</p>
+    </fieldset>
+    <fieldset>
+        <legend>trim：输入内容空格过滤</legend>
+        <div id="app12">
+            <div>
+                <input type="text" v-model="msg">
+                <span>输入类型是：{{msg.split('').length}}</span>
+            </div>
+            <div>
+                <input type="text" v-model.trim="msg1">
+                <span>输入类型是：{{msg1.split('').length}}</span>
+            </div>
+        </div>
+        <p>1、第一个输入时空格也会计算长度，第二个输入不会计算空格长度</p>
+        <p>2、第二个给v-model加了trim修饰符，会将输入的空格过滤</p>
+    </fieldset>
+</div>
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {
+            msg: '12313'
+        }
+    });
+    /*
+    * v-model
+    * 使用v-model后文本输入框（input、textarea等）不再依赖自身的value，而是以v-model绑定的数据
+    *
+    * */
+
+    let app1 = new Vue({
+        el: '#app1',
+        data: {
+            checked: true,
+        }
+    });
+    /*
+    * 使用label包裹input可以实现点击文字也能选中
+    * 多个单选框时，设置相同的name属性，可实现只能选中一个
+    * */
+
+    let app2 = new Vue({
+        el: '#app2',
+        data: {
+            check: '苹果',
+            msg: `
+            data:{
+            check:'苹果',
+            }
+            ，为空默认都不选，写上对应的value值则默认选中
+            `
+        }
+    });
+
+    let app3 = new Vue({
+        el: '#app3',
+        data: {
+            checked: true
+        }
+    });
+
+    let app4 = new Vue({
+        el: '#app4',
+        data: {
+            checks: '',
+            checkss: ['香蕉']
+        }
+    });
+
+    let app5 = new Vue({
+        el: '#app5',
+        data: {
+            checks: []
+        }
+    });
+
+    let app6 = new Vue({
+        el: '#app6',
+        data: {
+            checks: []
+        }
+    });
+
+    let app7 = new Vue({
+        el: '#app7',
+        data: {
+            check: true,
+            value: '123'
+        }
+    });
+
+    let app8 = new Vue({
+        el: '#app8',
+        data: {
+            value: '',
+            value1: '选中了',
+            value2: '没选中'
+        }
+    });
+
+    let app9 = new Vue({
+        el: '#app9',
+        data: {
+            selectvalue: '',
+        }
+    });
+
+    let app10 = new Vue({
+        el: '#app10',
+        data: {
+            msg: '',
+            msg1: ''
+        }
+    });
+
+    let app11 = new Vue({
+        el: '#app11',
+        data: {
+            msg: '',
+            msg1: ''
+        }
+    });
+
+    let app12 = new Vue({
+        el: '#app12',
+        data: {
+            msg: '',
+            msg1: ''
+        }
+    })
+</script>
+</body>
+</html>

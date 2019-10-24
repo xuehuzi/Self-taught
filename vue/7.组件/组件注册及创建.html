@@ -1,196 +1,61 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
     <title>组件注册及创建</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
-    <style>
-    </style>
 </head>
 
 <body>
-    <fieldset>
-        <legend>组件注册</legend>
-        <fieldset>
-            <legend>组件注册器注册组件</legend>
-            <div id="app">
-                <my-component></my-component>
-            </div>
-            <div id="app1">
-                <my-component1></my-component1>
-            </div>
-        </fieldset>
-        <fieldset>
-            <legend>语法糖注册组件</legend>
-            <div id="app2">
-                <my-component2></my-component2>
-            </div>
-            <div id="app3">
-                <my-component3></my-component3>
-            </div>
-        </fieldset>
-        <fieldset>
-            <legend>将定义在JavaScript中的HTML模板分离出来</legend>
-            <div id="app4">
-                <my-component4></my-component4>
-            </div>
-            <template id="t4">
-                <p>通过template解耦，将定义在JavaScript中的HTML模板分离出来</p>
-            </template>
-        </fieldset>
-        <pre>
-                var firstcomponent = Vue.extend({
-                    template: &#x27;&lt;div&gt;我是在组件构造器创建的全局组件&lt;/div&gt;&#x27;
-                })
-                Vue.component(&#x27;my-component&#x27;, firstcomponent)
-                var app = new Vue({
-                    el: &#x27;#app&#x27;
-                })
-                var secondcomponent = Vue.extend({
-                    template: &#x27;&lt;div&gt;我是在组件构造器创建的局部组件&lt;/div&gt;&#x27;
-                })
-                var app1 = new Vue({
-                    el: &#x27;#app1&#x27;,
-                    components: {
-                        &#x27;my-component1&#x27;: secondcomponent
-                    }
-                })
-                ////////////////////////////////////组件构造器注册全局和局部组件/////////////////////////////////////////
+<fieldset>
+    <legend>组件注册</legend>
+    <div id="app1">
+        <my-component1></my-component1>
+    </div>
+    <div id="app2">
+        <my-component2></my-component2>
+    </div>
+    <div id="app3">
+        <my-component3></my-component3>
+    </div>
+    <template id="t3">
+        <p>我是通过template解耦，将定义在JavaScript中的HTML模板分离出来的组件</p>
+    </template>
+    <pre>
                 Vue.component(&#x27;my-component2&#x27;, {
-                    template: &#x27;&lt;div&gt;我是语法糖注册的全局组件&lt;/div&gt;&#x27;
+                    template: &#x27;&lt;div&gt;我是全局组件&lt;/div&gt;&#x27;
                 })
+
                 var app2 = new Vue({
                     el: &#x27;#app2&#x27;
                 })
+
                 var app3 = new Vue({
                     el: &#x27;#app3&#x27;,
                     components: {
                         &#x27;my-component3&#x27;: {
-                            template: &#x27;&lt;div&gt;我是语法糖注册的局部组件&lt;/div&gt;&#x27;
+                            template: &#x27;&lt;div&gt;我是局部组件&lt;/div&gt;&#x27;
                         }
                     }
                 })
-                ////////////////////////////////////语法糖注册全局和局部组件/////////////////////////////////////////
-                &lt;div id=&quot;app4&quot;&gt;
-                &lt;my-component4&gt;&lt;/my-component4&gt;
-                &lt;/div&gt;
-                &lt;template id=&quot;t4&quot;&gt;
-                &lt;p&gt;通过template解耦，将定义在JavaScript中的HTML模板分离出来&lt;/p&gt;
-                &lt;/template&gt;
+
                 Vue.component(&#x27;my-component4&#x27;, {
                     template: &#x27;#t4&#x27;
                 })
+
                 var app4 = new Vue({
                     el: &#x27;#app4&#x27;
                 })
-                ////////////////////////////////////通过template解耦分定义在javascript中的html/////////////////////////////////////////
         </pre>
-    </fieldset>
-    <fieldset>
-        <legend>父子组件</legend>
-        <fieldset>
-            <legend>父子组件写法一</legend>
-            <div id="app5">
-                <my-component5></my-component5>
-            </div>
-        </fieldset>
-        <fieldset>
-            <legend>父子组件写法二</legend>
-            <div id="app6">
-                <my-component6></my-component6>
-            </div>
-            <template id="t6">
-                <div>
-                    <div>fu</div>
-                    <my-component7></my-component7>
-                </div>
-            </template>
-            <template id="t7">
-                <div>
-                    <div>zi</div>
-                    <my-component8></my-component8>
-                </div>
-            </template>
-            <template id="t8">
-                <div>sun</div>
-            </template>
-        </fieldset>
-        <pre>
-            var son = Vue.extend({
-                template: &#x27;&lt;div&gt;sun&lt;/div&gt;&#x27;
-            })
-            var father = Vue.extend({
-                template: &#x27;&lt;div&gt;zi&lt;child-component&gt;&lt;/child-component&gt;&lt;/div&gt;&#x27;,
-                components: {
-                    &#x27;child-component&#x27;: son
-                }
-            })
-            var grandfather = Vue.extend({
-                template: &#x27;&lt;div&gt;父&lt;father-component&gt;&lt;/father-component&gt;&lt;/div&gt;&#x27;,
-                components: {
-                    &#x27;father-component&#x27;: father
-                }
-            })
-            Vue.component(&#x27;my-component5&#x27;, grandfather)
-            var app5 = new Vue({
-                el: &#x27;#app5&#x27;
-            })
-            一、写法一
-            1.没有使用template解耦js和html，html写在js内
-            2.创建3个组件（未注册）
-            3.grandfather组件注册到全局，father组件通过components注册到grandfather（father是在grandfather局部注册，是其子组件）
-              son组件再注册到father组件（son是在father局部注册是其子组件。father在grandfather局部注册,son是grandfather孙组件）
-            
-              &lt;div id=&quot;app6&quot;&gt;
-                &lt;my-component6&gt;&lt;/my-component6&gt;
-            &lt;/div&gt;
-            &lt;template id=&quot;t6&quot;&gt;
-                &lt;div&gt;
-                    &lt;div&gt;fu&lt;/div&gt;
-                    &lt;my-component7&gt;&lt;/my-component7&gt;
-                &lt;/div&gt;
-            &lt;/template&gt;
-            &lt;template id=&quot;t7&quot;&gt;
-                &lt;div&gt;
-                    &lt;div&gt;zi&lt;/div&gt;
-                    &lt;my-component8&gt;&lt;/my-component8&gt;
-                &lt;/div&gt;
-            &lt;/template&gt;
-            &lt;template id=&quot;t8&quot;&gt;
-                &lt;div&gt;sun&lt;/div&gt;
-            &lt;/template&gt;
-            Vue.component(&#x27;my-component6&#x27;, {
-                template: &#x27;#t6&#x27;,
-                components: {
-                    &#x27;my-component7&#x27;: {
-                        template: &#x27;#t7&#x27;,
-                        components: {
-                            &#x27;my-component8&#x27;: {
-                                template: &#x27;#t8&#x27;,
-                            }
-                        }
-                    }
-                }
-            })
-            new Vue({
-                el: &#x27;#app6&#x27;
-            })
-            二、写法二
-            2.1通过template标签解耦html，直接在html内写好三个组件的嵌套关系（具体看看三个组件标签的嵌套关系）
-            2.2全局注册祖组件，然后通过components逐级注册子组件和孙组件
-        </pre>
-    </fieldset>
-    <fieldset>
-        <legend>特殊html标签内组件的使用</legend>
-        <div id="app9">
-            <table>
-                <tbody is='my-component9'></tbody>
-            </table>
-        </div>
-        <template id="t9">
-            <div>Vue 组件的模板在某些情况下会受到 HTML 的限制，比如table内规定只允许是tr、td 、 th等这些表格元素，所以在table内直接使用组件是无效的，而一些像option这样的元素只能出现在某些其它元素内部。这种情况下，可以使用特殊的is属性来挂载组件
-                <pre>
+    <div id="app4">
+        <table>
+            <tbody is='my-component4'></tbody>
+        </table>
+    </div>
+    <template id="t4">
+        <div>
+            <p>我是特殊标签table内的组件</p>
+            <pre>
                 &lt;div id=&quot;app9&quot;&gt;
                 &lt;table&gt;
                     &lt;my-component9&gt;...&lt;/my-component9&gt;
@@ -205,32 +70,64 @@
                 &lt;/div&gt;
                 正确在table内使用自定义组件的方式，使用is属性来挂载组件
             </pre>
-            </div>
-        </template>
-    </fieldset>
-    <fieldset>
-        <legend>组件中data区别</legend>
-        <fieldset>
-            <legend>引用对象</legend>
-            <div id="app10">
-                <my-component10></my-component10>
-                <my-component10></my-component10>
-            </div>
-            <template id="t10">
-                <button type="button" v-on:click='number++'>{{number}}</button>
-            </template>
-        </fieldset>
-        <fieldset>
-            <legend>return新对象</legend>
-            <div id="app11">
-                <my-component11></my-component11>
-                <my-component11></my-component11>
-            </div>
-            <template id="t11">
-                <button type="button" v-on:click='number++'>{{number}}</button>
-            </template>
-        </fieldset>
-        <pre>
+        </div>
+    </template>
+    <ul>
+        <li>组件（Component）是Vue最强大的功能之一。组件可以扩展HTML元素，封装可重用的代码</li>
+        <li>可以使用独立可复用的小组件来构建大型应用，任意类型的应用界面都可以抽象为一个组件树</li>
+        <li>组件注册分为全局注册和局部注册</li>
+        <li>调用Vue.component()是全局注册，在vue实例选项对象components属性内注册的组件是局部的</li>
+        <li>全局组件所有的vue实例都可以调用，局部注册的组件只能在其对应的vue实例下使用</li>
+        <li>组件中也可像Vue实例那样使用其他的选项，如data computed methods等。但data和实例使用稍有区别，组件中的data必须是函数，其值需return出来</li>
+        <li>组件可以嵌套，组件中定义并使用其他组件，这就构成了父子组件的关系</li>
+        <li>组件template标签下只能有一个根元素</li>
+        <li>组件名称推荐使用小写字母加­进行命名（必须）, 如my­componnet方式命名组件</li>
+        <li>组件在特殊html标签内使用受限，需要使用is属性来挂载组件（如table标签内只能是tr td 等表格相关元素不能使用自定义标签）</li>
+        <li>组件优点：所有vue实例均可使用，一般实际开发过程中局部组件使用相对较多</li>
+        <li>组件缺点：权限太大，容错率低</li>
+    </ul>
+</fieldset>
+
+<fieldset>
+    <legend>父子组件嵌套</legend>
+    <div id="app5">
+        <my-component5></my-component5>
+    </div>
+    <template id="t5">
+        <div>
+            <span>我是爷爷</span>
+            <my-component6></my-component6>
+        </div>
+    </template>
+    <template id="t6">
+        <div>
+            <span>我是爸爸</span>
+            <my-component7></my-component7>
+        </div>
+    </template>
+    <template id="t7">
+        <div>
+            <span>我是儿子</span>
+        </div>
+    </template>
+</fieldset>
+
+<fieldset>
+    <legend>实例data和组件data</legend>
+    <div id="app7">
+        <div>
+            <button @click="pull">{{numb}}</button>
+            <button @click="pull">{{numb}}</button>
+        </div>
+        <div>
+            <my-component77></my-component77>
+            <my-component77></my-component77>
+        </div>
+    </div>
+    <template id="t77">
+        <button type="button" @click='number++'>{{number}}</button>
+    </template>
+    <pre>
                 var data = {
                     number: 0
                 }
@@ -258,155 +155,87 @@
                         }
                     }
                 })
-                   例子一传入一个对象，由于JS中对象类型的变量实际上保存的是对象的引用，所以当存在多个这样的组件时，会共享数据
-                导致一个组件中数据的改变会引起其他组件数据的改变。
-                
-                而使用一个返回对象的函数，每次使用组件都会创建一个新的对象，这样就不会出现共享数据的问题来了
         </pre>
-    </fieldset>
-    <!--  -->
-    <script>
-        /*
-        一、组件说明：
-            组件（Component）是 Vue.js 最强大的功能之一。组件可以扩展HTML元素，封装可重用的代码。它提供了一种抽象，让我们可以使用独立
-            可复用的小组件来构建大型应用，任意类型的应用界面都可以抽象为一个组件树
-        1.1组件注册知识点
-        *组件注册分为全局注册和局部注册
-        *调用Vue.component()注册的组件是全局的，在vue实例选项对象components属性内注册的组件是局部的
-        *全局组件所有的vue实例都可以调用，局部注册的组件只能在其对应的vue实例下使用，其他vue实例不可使用
-        *组件中也可以像Vue实例那样使用其他的选项，比如 data computed methods等。但是在使用data时和实例稍有区别，data 必须是函数，然后将数据return出去
-        *组件可以嵌套，组件中定义并使用其他组件，这就构成了父子组件的关系
-        *组件template标签下只能有一个根元素
-        *组件中的data必须是函数，其值需return出来
-        2.1组件注册流程
-        *创建组件：调用组件构造器Vue.extend()，并通过组件构造器选项对象的template属性用于定义组件要渲染的HTML
-        *注册组件：使用Vue.component()注册组件，需要提供2个参数，第1个参数是组件的标签，第2个参数是组件构造器
-        *使用组件：组件必须挂载到Vue实例下才能生效；另外同一个组件可以同时挂载到多个Vue实例
-     
+    <p>1、由于JS中对象类型的变量实际上保存的是对象的引用，当多个组件时，会共享数据导致一个组件中数据的改变会引起其他组件数据的改变</p>
+    <p>2、而子组件使用一个返回对象的函数，每次使用组件都会创建一个新的对象，这样就不会出现共享数据的问题</p>
+</fieldset>
 
+<script>
+    Vue.component('my-component1', {
+        template: '<p>我是全局组件</p>'
+    });
 
-        //特殊html元素内组件的使用
-        //组件中data和实例中data的区别
-        */
-        var firstcomponent = Vue.extend({
-            template: '<div>我是在组件构造器创建的全局组件</div>'
-        })
-        //1.创建一个组件构造器
-        Vue.component('my-component', firstcomponent)
-        //2.注册组件，并指定组件标签及构造器('my-component', firstcomponent)
-        var app = new Vue({
-            el: '#app'
-        });
-        //3.挂载组件到指定的vue实例下面：注：实例下<my-component></my-component>调用了组件
-        //全局注册
-        var secondcomponent = Vue.extend({
-            template: '<div>我是在组件构造器创建的局部组件</div>'
-        })
-        var app1 = new Vue({
-            el: '#app1',
-            components: {
-                'my-component1': secondcomponent
-            }
-        })
-        //局部注册
-        Vue.component('my-component2', {
-            template: '<div>我是语法糖注册的全局组件</div>'
-        })
-        var app2 = new Vue({
-            el: '#app2'
-        })
-        //语法糖全局注册
-        var app3 = new Vue({
-            el: '#app3',
-            components: {
-                'my-component3': {
-                    template: '<div>我是语法糖注册的局部组件</div>'
-                }
-            }
-        })
-        //语法糖局部注册
-        Vue.component('my-component4', {
-            template: '#t4'
-        })
-        var app4 = new Vue({
-            el: '#app4'
-        })
-        //template解耦javascript中的html
-        /************************************************* 组件注册 ************************************************/
-        var son = Vue.extend({
-            template: '<div>sun</div>'
-        })
-        var father = Vue.extend({
-            template: '<div>zi<child-component></child-component></div>',
-            components: {
-                'child-component': son
-            }
-        })
-        var grandfather = Vue.extend({
-            template: '<div>父<father-component></father-component></div>',
-            components: {
-                'father-component': father
-            }
-        })
-        Vue.component('my-component5', grandfather)
-        var app5 = new Vue({
-            el: '#app5'
-        })
+    let app1 = new Vue({
+        el: '#app1'
+    });
 
-        Vue.component('my-component6', {
-            template: '#t6',
-            components: {
-                'my-component7': {
-                    template: '#t7',
-                    components: {
-                        'my-component8': {
-                            template: '#t8',
-                        }
-                    }
-                }
+    let app2 = new Vue({
+        el: '#app2',
+        components: {
+            'my-component2': {
+                template: '<p>我是局部组件</p>'
             }
-        })
-        new Vue({
-            el: '#app6'
-        })
-        /************************************************* 父子组件 ************************************************/
-        var app9 = new Vue({
-            el: '#app9',
-            components: {
-                'my-component9': {
-                    template: '#t9'
-                }
-            }
-        })
-        //特殊html元素内组件的使用
-        var data = {
-            number: 0
         }
-        var app10 = new Vue({
-            el: '#app10',
-            components: {
-                'my-component10': {
-                    template: '#t10',
-                    data: function () {
-                        return data
+    });
+
+    Vue.component('my-component3', {
+        template: '#t3'
+    });
+
+    let app3 = new Vue({
+        el: '#app3'
+    });
+
+    let app4 = new Vue({
+        el: '#app4',
+        components: {
+            'my-component4': {
+                template: '#t4'
+            }
+        }
+    });
+    /*组件注册*/
+
+
+    let app6 = new Vue({
+        el: '#app5',
+        template: '#t5',
+        components: {
+            'my-component6': {
+                template: '#t6',
+                components: {
+                    'my-component7': {
+                        template: '#t7',
                     }
                 }
             }
-        })
-        var app11 = new Vue({
-            el: '#app11',
-            components: {
-                'my-component11': {
-                    template: '#t11',
-                    data: function () {
-                        return {
-                            number: 0
-                        }
+        }
+
+    });
+    /************************************************* 父子组件 ************************************************/
+
+    let app7 = new Vue({
+        el: '#app7',
+        data: {
+            numb: 0
+        },
+        methods: {
+            pull: function () {
+                this.numb++
+            }
+        },
+        components: {
+            'my-component77': {
+                template: '#t77',
+                data: function () {
+                    return {
+                        number: 0
                     }
                 }
             }
-        })
-    </script>
+        }
+    })
+</script>
 </body>
 
 
