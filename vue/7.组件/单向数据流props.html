@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>props</title>
+    <title>单向数据流props</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
 </head>
 
@@ -53,7 +53,8 @@
     <legend>props其他数据类型传递和数据验证</legend>
     <div id="app3">
         <my-component3 v-bind:son_obj='father_obj' v-bind:arry='arry' v-bind:number='number'
-                       v-bind:string='string' :boolean="boolean" :string_numb="string_numb">
+                       v-bind:string='string' :boolean="boolean" :string_numb="string_numb"
+                       v-bind:custom_fn="custom_fn">
 
         </my-component3>
     </div>
@@ -65,11 +66,19 @@
             <p>传递字符：{{string}}</p>
             <p>传递布尔值：{{boolean}}</p>
             <p>只能字符串或数值：{{string_numb}}</p>
+            <p>父组件不传值函数默认返回方式：{{fn_value}}</p>
+            <p>自定义验证函数：{{custom_fn}}</p>
         </div>
     </template>
     <p>1、一般组件传递数据时都建议进行props数据验证</p>
     <p>2、数据验证时props就需要使用对象写法</p>
     <pre>
+        <xmp>
+            <my-component3 v-bind:son_obj='father_obj' v-bind:arry='arry' v-bind:number='number'
+                           v-bind:string='string' :boolean="boolean" :string_numb="string_numb"
+                           v-bind:custom_fn="custom_fn">
+            </my-component3>
+        </xmp>
             data: {
                 father_obj: {
                     name: '张三',
@@ -107,9 +116,21 @@
                         default: true
                     },
                 //只接收字符串或数值类型的值
-                string_numb: [String, Number]
-                }
+                string_numb: [String, Number],
 
+                //如果是数组类型且父组件没给子组件传值(没有v-bind:fn_value="fn_value")，则默认通过函数返回一个值
+                fn_value: {
+                    type: Array,
+                    default: function () {
+                        return ['父组件没传值','我是函数默认返回值'];
+                    },
+                //自定义验证函数，custom_fn的值如小于10控制台会抛出错误
+                custom_fn:{
+                    validator:function (value) {//函数接收的value就是父组件custom_fn的值
+                            return value>10
+                        }
+                    }
+            }
     </pre>
 </fieldset>
 <fieldset>
@@ -153,7 +174,7 @@
         </div>
     </template>
     <p>*** props传递数据是单向的，也就是父组件数据变化时会传递给子组件，但是反过来不行</p>
-    <p>*** 目的 :是尽可能将父子组件解稿，避免子组件无意中修改了父组件的状态。</p>
+    <p>*** 目的 :是尽可能将父子组件解耦，避免子组件无意中修改了父组件的状态。</p>
     <p>*** 应用场景: 业务中会经常遇到两种需要改变 prop 的情况</p>
     <p>1、父组件传递的数据作为需要被转变的原始值传入。这种情况，子组件使用计算属性就可以</p>
     <p>2、父组件传递初始值进来，子组件将它作为初始值保存起来，在自己的作用域 下可以随意使用和修改</p>
@@ -204,6 +225,8 @@
             string: '字符串',
             boolean: true,
             string_numb: 123123,
+            fn_value:'',
+            custom_fn:85
         },
         components: {
             'my-component3': {
@@ -211,9 +234,6 @@
                     son_obj: Object,
                     arry: {
                         type: Array,
-                        default: function () {
-                            return []
-                        }
                     },
                     number: {
                         type: Number,
@@ -227,7 +247,17 @@
                         default: true
                     },
                     string_numb: [String, Number],
-                    fn: ''
+                    fn_value: {
+                        type: Array,
+                        default: function () {
+                            return ['父组件没传值','我是函数默认返回值'];
+                        }
+                    },
+                    custom_fn:{
+                        validator:function (value) {
+                            return value>10
+                        }
+                    }
                 },
                 template: '#t3'
             }

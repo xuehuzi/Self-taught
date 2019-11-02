@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <title>非父子组件通信-父链-子链</title>
+</head>
+<body>
+<fieldset>
+    <legend>中央事件总线通信(非父子组件通信)</legend>
+    <h4>实例15(父子关系)：</h4>
+    <div id="app15">
+        <p>{{message}}</p>
+        <p>{{message1}}</p>
+        <my-component15></my-component15>
+    </div>
+    <template id="t15">
+        <div>
+            <button @click='handevent'>传递事件</button>
+        </div>
+    </template>
+    <h4>实例16(兄弟关系)：</h4>
+    <div id="app16">
+        <my-component16a></my-component16a>
+        <my-component16b></my-component16b>
+    </div>
+    <template id="t16a">
+        <div>
+            <button @click="emita">我是A点我向B传数据{{ infoa }}</button>
+        </div>
+    </template>
+    <template id="t16b">
+        <div>
+            <button @click="emitb">我是B点我向A传数据{{ infob }}</button>
+        </div>
+    </template>
+    <pre>
+        通信流程：
+        1、先确定通信双方哪一方是信息发送方，哪一方是信息接收方
+        2、信息发送方通过this.$root.bus.$emit('自定义事件名',value,,,)将信息发送出去
+        3、信息接收方，在其组件实例化的时候，也就是在生命周期mounted or created钩子函数里监听来自bus的事件
+           bus.$on('自定义事件名'，function(){
+              //do something
+              //需注意下，函数内this指向，需要在外面提前绑定
+           })
+
+        知识点：
+        1、中央事件总线这种方法巧妙而轻量地实现了任何组件间的通信，包括父子、兄弟、跨级
+        2、如果深入使用，可以扩展 bus 实例，给它添加 data 、 methods、 computed 等选项这些都是可以公用的，在业务中
+           尤其是协同开发时非常有用，因为经常需要共享一些通用的信息，比如用户登录的昵称、性别、邮箱等，还有用户的授权
+           token等只需在初始化时让 bus 获取一次，任何时间、任何组件就可以从中直接使用，在单页面应用（SPA）中会实用。
+        3、当你的项目比较大，有更多的小伙伴参与开发时，也可以选择更好的状态管理解决方案vuex，
+        </pre>
+</fieldset>
+
+<fieldset>
+    <legend>$children $parent $refs</legend>
+    <h4>实例17：使用$children在父组件中访问子组件</h4>
+    <div id="app17">
+        <my-component17></my-component17>
+    </div>
+    <template id="my-component17">
+        <div>
+            <my-component17-1></my-component17-1>
+            <my-component17-2></my-component17-2>
+            <button @click="showChildComponentData">显示子组件的数据</button>
+        </div>
+    </template>
+    <template id="my-component17-1">
+        <div>
+            <p>子组件1</p>
+        </div>
+    </template>
+    <template id="my-component17-2">
+        <div>
+            <p>子组件2</p>
+        </div>
+    </template>
+    <h4>实例18：使用$parent在子组件中访问父组件</h4>
+    <div id="app18">
+        <my-component18></my-component18>
+    </div>
+    <template id="t18">
+        <div>
+            <span>父组件</span>
+            <my-component18-1></my-component18-1>
+        </div>
+    </template>
+    <template id="t18-1">
+        <div>
+            <button @click="showParentComponentData">子组件</button>
+            <my-component18-2></my-component18-2>
+        </div>
+    </template>
+    <template id="t18-2">
+        <div>
+            <button @click="showParentComponentData">孙组件</button>
+        </div>
+    </template>
+    <!--  -->
+    <pre>
+        1、需要注意 $children 并不保证顺序，也不是响应式的。如果你发现自己正在尝试使用 $children 来进行数据绑定，考虑使用一个数组配合 v-for 来生成子组件
+           并且使用 Array 作为真正的来源。
+        2、$children可访问它所有的子组件，而且可以递归向上或向下无限访问， 直到根实例或最内层的组件
+        3、虽然$children和$parent能访问父/子组件的数据，但尽量避免在子组件修改父组件数据，尽量使用props向子组件传数据，尽量保证组件自己修改自己的状态
+        </pre>
+    <h4>实例19：$refs子组件索引</h4>
+    <div id='app19'>
+        <my-component19></my-component19>
+    </div>
+    <template id="t19">
+        <div>
+            <my-component19-1 ref='t19A'></my-component19-1>
+            <my-component19-2 ref='t19B'></my-component19-2>
+            <button @click='getrefs'>通过 ref 获取子组件实例</button>
+        </div>
+    </template>
+    <template id="t19-1">
+        <div>子组件1</div>
+    </template>
+    <template id="t19-2">
+        <div>子组件2</div>
+    </template>
+    <pre>
+        1、当子组件过多时通过 this.$children 来一一遍历出我们需要的一个组件实例是比较困难，尤其是组件动态渲染时，它们的序列是不固定的
+           Vue 提供了子组件索引的方法，用特殊的属性ref来为子组件指定一个索引名称
+        2、子组件标签上使用 ref 指定一个名称，井在父组件内通过 this.$refs 来访问指定名称的子组件
+        3、$refs只在组件渲染完成后才填元，并且它是非响应式的，它仅仅作为一个直接访问子组件的应急方案，应当避免在模板或计算属性中使$refs
+
+        &lt;template id=&quot;t19&quot;&gt;
+        &lt;div&gt;
+            &lt;my-component19-1 ref=&#x27;t19A&#x27;&gt;&lt;/my-component19-1&gt;
+            &lt;my-component19-2 ref=&#x27;t19B&#x27;&gt;&lt;/my-component19-2&gt;
+            &lt;button @click=&#x27;getrefs&#x27;&gt;通过 ref 获取子组件实例&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;/template&gt;
+        &lt;template id=&quot;t19-1&quot;&gt;...&lt;/template&gt;
+        &lt;template id=&quot;t19-2&quot;&gt;...&lt;/template&gt;
+
+        var app = new Vue({
+            el: &#x27;#app19&#x27;,
+            components: {
+                &#x27;my-component19&#x27;: {
+                    template: &#x27;#t19&#x27;,
+                    components: {
+                        &#x27;my-component19-1&#x27;: {
+                            //...
+                        },
+                        &#x27;my-component19-2&#x27;: {
+                            //...
+                        }
+                    },
+                    methods: {
+                        getrefs: function () {
+                            console.log(this.$refs.t19A.msg);
+                            console.log(this.$refs.t19B.msg);
+                        }
+                    }
+                }
+            }
+        })
+        </pre>
+</fieldset>
+
+<script>
+
+    let app15 = new Vue({
+        el: '#app15',
+        data: {
+            message: '',
+            message1: '',
+            bus:new Vue()
+        },
+        mounted: function () {
+            var that = this;
+            this.$root.bus.$on('onmessage', function (msg, msg1) {
+                that.message = msg;
+                that.message1 = msg1
+            })
+        },
+        components: {
+            'my-component15': {
+                template: '#t15',
+                methods: {
+                    handevent: function () {
+                        this.$root.bus.$emit('onmessage', '中央bus总线1', '中央bus总线12')
+                    }
+                }
+            }
+        }
+    });
+    Vue.component('my-component16a', {
+        template: '#t16a',
+        data: function () {
+            return {
+                infoa: 'A'
+            }
+        },
+        created: function () {
+            var that = this;
+            this.$root.bus.$on('anotherclicka', function () {
+                that.infoa = '：我来自组件A的数据';
+            })
+        },
+        methods: {
+            emita: function () {
+                this.$root.bus.$emit('anotherclickb',this.infoa)
+            }
+        }
+    });
+    Vue.component('my-component16b', {
+        template: '#t16b',
+        data: function () {
+            return {
+                infob: 'B',
+            }
+        },
+        created: function () {
+            var that = this;
+            this.$root.bus.$on('anotherclickb', function () {
+                that.infob = '：我来自组件B的数据';
+            })
+        },
+        methods: {
+            emitb: function () {
+                this.$root.bus.$emit('anotherclicka',this.infob)
+            }
+        }
+    });
+    let app16 = new Vue({
+        el: '#app16',
+        data: {
+            bus: new Vue(),//bus中介
+        },
+    });
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    let app17 = new Vue({
+        el: '#app17',
+        components: {
+            'my-component17': {
+                template: '#my-component17',
+                components: {
+                    'my-component17-1': {
+                        template: '#my-component17-1',
+                        data: function () {
+                            return {
+                                msg: '我是子组件1数据'
+                            }
+                        }
+                    },
+                    'my-component17-2': {
+                        template: '#my-component17-2',
+                        data: function () {
+                            return {
+                                msg: '我是子组件2数据'
+                            }
+                        }
+                    }
+                },
+                methods: {
+                    showChildComponentData: function () {
+                        for (var i = 0; i < this.$children.length; i++) {
+                            alert(this.$children[i].msg)
+                        }
+                    }
+                }
+            }
+        }
+    });
+    let app18 = new Vue({
+        el: '#app18',
+        components: {
+            'my-component18': {
+                template: '#t18',
+                data: function () {
+                    return {
+                        msg: '我是父组件的msg'
+                    }
+                },
+                components: {
+                    'my-component18-1': {
+                        template: '#t18-1',
+                        data: function () {
+                            return {
+                                msg: '我是子组件的msg'
+                            }
+                        },
+                        methods: {
+                            showParentComponentData: function () {
+                                alert(this.$parent.msg)
+                            }
+                        },
+                        components: {
+                            'my-component18-2': {
+                                template: '#t18-2',
+                                methods: {
+                                    showParentComponentData: function () {
+                                        alert(this.$parent.msg)
+                                    }
+                                },
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+    let app19 = new Vue({
+        el: '#app19',
+        components: {
+            'my-component19': {
+                template: '#t19',
+                components: {
+                    'my-component19-1': {
+                        template: '#t19-1',
+                        data: function () {
+                            return {
+                                msg: '子组件msg-1'
+                            }
+                        }
+                    },
+                    'my-component19-2': {
+                        template: '#t19-2',
+                        data: function () {
+                            return {
+                                msg: '子组件msg-2'
+                            }
+                        }
+                    }
+                },
+                methods: {
+                    getrefs: function () {
+                        console.log(this.$refs.t19A.msg);
+                        console.log(this.$refs.t19B.msg);
+                    }
+                }
+            }
+        }
+    })
+
+</script>
+</body>
+</html>

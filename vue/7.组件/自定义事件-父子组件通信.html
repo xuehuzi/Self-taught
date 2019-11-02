@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>自定义事件-父子组件通信</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+</head>
+
+<body>
+<div>
+    <p>父组件向子组件传递</p>
+    <ul>
+        <li>props：父组件可以使用props向子组件传递数据</li>
+        <li>$children：使用$children可以在父组件中访问子组件（子链）</li>
+    </ul>
+    <p>子组件向父组件通信</p>
+    <ul>
+        <li>自定义事件：v-on:count='getson'</li>
+        <li>父组件通过getson监听子组件的事件</li>
+        <li>子组件通过$emit(count,...)触发事件，并返回给父组件</li>
+        <li>通过修改父组件传递的props来修改父组件数据,但一般不建议直接在子组件修改父组件的数据,以下两种情况可考虑
+            <ul>
+                <li>Prop作为初始值传入后，子组件想把它当作局部数据来用（定义一个局部变量，并用prop的值初始化它）</li>
+                <li>Prop作为原始数据传入，由子组件处理成其它数据输出（定义一个计算属性，处理prop的值并return返回）</li>
+            </ul>
+        </li>
+        <li>$parent：使用$parent可以访问父组件的数据（父链）</li>
+    </ul>
+</div>
+<fieldset>
+    <legend>父子组件通信</legend>
+    <fieldset>
+        <legend>自定义事件</legend>
+        <div id="app1">
+            <h4>实例1：</h4>
+            <p>{{total}}</p>
+            <my-component v-on:count='getson'></my-component>
+        </div>
+        <template id="t1">
+            <div>
+                <button @click='plus'>+l</button>
+                <button @click='less'>-1</button>
+            </div>
+        </template>
+        <div id="app2">
+            <h4>实例2：</h4>
+            <p>{{total}}</p>
+            <my-component2 v-model='total'></my-component2>
+        </div>
+        <template id="t2">
+            <div>
+                <button @click='plus'>+1</button>
+                <button @click='less'>-1</button>
+            </div>
+        </template>
+        <xmp>
+            <div>
+                <h4>实例1：</h4>
+                <p>{{total}}</p>
+                <my-component v-on:count='getson'></my-component>
+            </div>
+            <template>
+                <div>
+                    <button @click='plus'>+l</button>
+                    <button @click='less'>-1</button>
+                </div>
+            </template>
+
+            var app1 = new Vue({
+                el: '#app1',
+                data: {
+                    total: 0
+                    },
+                methods: {
+                getson: function (val) {
+                    this.total = val
+                        }
+                    },
+                components: {
+                    'my-component': {
+                        template: '#t1',
+                        data: function () {
+                                return {
+                                    number: 0
+                                    }
+                                },
+                methods: {
+                    plus: function () {
+                            this.number++
+                            this.$emit('count', this.number)
+                            },
+                    less: function () {
+                            this.number--
+                            this.$emit('count', this.number)
+                            }
+                        }
+                    }
+                }
+            })
+
+            实例1代码说明
+            2.1 父组件自定义事件v-on:count='getson'
+            2.2 子组件加减函数（plus和less）改变data内的number，然后通过this.$emit()将变化后的值传递给父组件
+            2.3 this.$emit()方法第一个参数是自定义事件名称count，后面的参数是要传递的数据，可不填或填多个逗号分隔开
+            2.3 父组件通过两个自定义事件的方法getson，接收子组件传递过来的值，再将接收的值赋值给total
+
+            <div>
+                <h4>实例2：</h4>
+                <p>{{total}}</p>
+                <my-component2 v-model='total'></my-component2>
+            </div>
+            <template>
+                <div>
+                    <button @click='plus'>+1</button>
+                    <button @click='less'>-1</button>
+                </div>
+            </template>
+
+            var app2 = new Vue({
+                el: '#app2',
+                data: {
+                    total: 0
+                },
+                components: {
+                    'my-component2': {
+                        template: '#t2',
+                        data: function () {
+                                return {
+                                    number: 0
+                                    }
+                                },
+                        methods: {
+                            plus: function () {
+                                    this.number++
+                                    this.$emit('input', this.number)
+                                    },
+                            less: function () {
+                                    this.number--
+                                    this.$emit('input', this.number)
+                                    }
+                                }
+                            }
+                        }
+                    })
+
+            实例2代码说明
+            3.1 实例2父组件没有自定义指令，而是v-model直接绑定了total
+            3.2 子组件this.$emit()方法的事件名是input
+            3.3 v-model本身是一个语法糖，其原理就是利用了v-bind和v-on来实现的，具体见实例3
+        </xmp>
+    </fieldset>
+    <fieldset>
+        <legend>在组件中使用v-model</legend>
+        <div id="app3">
+            <h4>实例3：使用v-bind和v-on实现v-model</h4>
+            <input type="text" :value="text" @input="changeValue($event.target.value)">
+            <span>{{text}}</span>
+            <pre>
+                &lt;div id=&quot;app3&quot;&gt;
+                    &lt;input type=&quot;text&quot; v-bind:value=&quot;text&quot; v-on:input=&quot;changeValue($event.target.value)&quot;&gt; {{text}}
+                &lt;/div&gt;
+                • 把input的value绑定到Vue实例的属性text上，text改变，input中的内容也会改变
+                • 然后把表单的input事件处理函数设置为Vue实例的一个方法，这个方法会根据输入参数改变Vue中text的值
+                • 相应的，在input中输入内容时，触发了input事件，把event.target.value传给这个方法，最后就实现了改变绑定的数据的效果。
+                </pre>
+        </div>
+        <div id="app4">
+            <div>
+                <h4>实例4：</h4>
+                <span>父：{{value}}</span>
+                <input type="text" v-model='value'>
+            </div>
+            <my-component4 v-model="value"></my-component4>
+        </div>
+        <template id="t4">
+            <div>
+                <span>子：{{childvalue}}</span>
+                <input type="text" v-model='childvalue'>
+            </div>
+        </template>
+        <pre>
+            实现一个具有双向绑定的 v-model 组件要满足下面两个要求 ：
+            • 将其 value 特性绑定到一个名叫 value 的 prop 上
+            • 在其 input 事件被触发时，将新的值通过自定义的 input 事件抛出
+            v-model 其实是一个语法糖，这背后其实做了两个操作
+            • v-bind 绑定一个 value 属性
+            • v-on 指令给当前元素绑定 input 事件
+            在原生表单元素中
+            &lt;input v-model=&#x27;something&#x27;&gt;
+            相当于,其原理是当input接收到新的输入，就会触发input事件，将事件目标的value 值赋给绑定的元素
+            &lt;input v-bind:value=&quot;something&quot; v-on:input=&quot;something = $event.target.value&quot;&gt;
+            在自定义组件中
+            &lt;my-component v-model=&#x27;something&#x27;&gt;&lt;/my-componment&gt;
+            相当于
+            &lt;my-component v-bind:value=&#x27;something&#x27; v-on:input=&#x27;something = arguments[0]&#x27;&gt;&lt;/my-component&gt;
+            </pre>
+    </fieldset>
+</fieldset>
+
+<script>
+
+    let app1 = new Vue({
+        el: '#app1',
+        data: {
+            total: 0
+        },
+        methods: {
+            getson: function (val) {
+                this.total = val
+            }
+        },
+        components: {
+            'my-component': {
+                template: '#t1',
+                data: function () {
+                    return {
+                        number: 0
+                    }
+                },
+                methods: {
+                    plus: function () {
+                        this.number++;
+                        this.$emit('count', this.number)
+                    },
+                    less: function () {
+                        this.number--;
+                        this.$emit('count', this.number)
+                    }
+                }
+            }
+        }
+    });
+    let app2 = new Vue({
+        el: '#app2',
+        data: {
+            total: 0
+        },
+        components: {
+            'my-component2': {
+                template: '#t2',
+                data: function () {
+                    return {
+                        number: 0
+                    }
+                },
+                methods: {
+                    plus: function () {
+                        this.number++;
+                        this.$emit('input', this.number)
+                    },
+                    less: function () {
+                        this.number--;
+                        this.$emit('input', this.number)
+                    }
+                }
+            }
+        }
+    });
+    let app3 = new Vue({
+        el: '#app3',
+        data: {
+            text: '1'
+        },
+        methods: {
+            changeValue(value) {
+                this.text = value
+            }
+        }
+    });
+
+    let app14 = new Vue({
+        el: '#app4',
+        data: {
+            value: '',
+        },
+        components: {
+            'my-component4': {
+                template: '#t4',
+                props: ['value'],
+                data: function () {
+                    return {
+                        childvalue: this.value
+                    }
+                },
+                watch: {
+                    value: function (val) {
+                        this.childvalue = val;
+                    },
+                    childvalue: function (val) {
+                        this.$emit('input', this.childvalue)
+                    }
+                }
+            }
+        }
+    });
+
+</script>
+</body>
+
+</html>
