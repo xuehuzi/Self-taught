@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>render函数</title>
+</head>
+<body>
+<p>render函数作用</p>
+<ul>
+    <li>一般我们使用 template 来创建HTML</li>
+    <li>但某些特定情况下，以第一个app为例，template创建的html代码冗长，而且在每一个级别的标题中重复书写了slot</li>
+    <li>如果要避免这种冗长的template标签，以及需要js的编程能力。此时需要用render来创建HTML</li>
+</ul>
+<p>render函数说明</p>
+<ul>
+    <li>render: function (createElement) { return createElement(...) }</li>
+    <li>在render函数的方法中，参数必须是createElement</li>
+    <li>render函数执行的代码块，需要通过return createElement(...)来返回</li>
+</ul>
+<p>render函数参数说明</p>
+<ul>
+    <li>可接收三个参数，第一个参数必选，第二第三可选</li>
+    <li>第一个参数类型可以是 string || object || function</li>
+    <ul>
+        <li>string类型，创建html标签</li>
+        <li>Object类型，返回一个含有数据选项的对象return createElement({template:'&lt;div>......&lt;/div>'})</li>
+        <li>function类型，方法返回含有数据选项的对象return createElement(domFun())</li>
+    </ul>
+    <li>第二个参数只能是object类型</li>
+    <ul>
+        <li>第二个参数，是一个包含模板相关属性的数据对象</li>
+        <li>class:{}定义class相关</li>
+        <li>style:{}定义style相关</li>
+        <li>attrs:{}html相关特性</li>
+        <li>domProps:{}原生的Dom属性</li>
+        <li>除了这些还有其他相关属性如on添加事件等，通过控制台查看app4通过render函数第二个参数都设置了id、classname、style等</li>
+    </ul>
+    <li>第三个参数类型可以是string || array</li>
+    <ul>
+        <li>array类型，会作为我们构建函数的子节点来使用</li>
+        <li>[ createElement('h1','第三个参数的arry类型') ]</li>
+        <li>上面一行代码通过数组创建了一个h1标签，标签内容是第三个参数的arry类型</li>
+    </ul>
+</ul>
+<fieldset>
+    <legend>render函数</legend>
+    <div id="app">
+        <my-component :son_level="father_level">我是temlate组件创建</my-component>
+    </div>
+    <div id="app2">
+        <my-component2 :son_level="father_level">我是render函数创建</my-component2>
+    </div>
+    <template id="t1">
+        <div>
+            <h1 v-if="son_level==1">
+                <slot></slot>
+            </h1>
+
+            <h2 v-if="son_level==2">
+                <slot></slot>
+            </h2>
+
+            <h3 v-if="son_level==3">
+                <slot></slot>
+            </h3>
+
+        </div>
+    </template>
+    <xmp>
+        <my-component :son_level="father_level">我是temlate组件创建</my-component>
+
+        <my-component2 :son_level="father_level">我是render函数创建</my-component2>
+
+        <template>
+            <div>
+                <h1 v-if="son_level==1">
+                    <slot></slot>
+                </h1>
+
+                <h2 v-if="son_level==2">
+                    <slot></slot>
+                </h2>
+
+                <h3 v-if="son_level==3">
+                    <slot></slot>
+                </h3>
+            </div>
+        </template>
+    </xmp>
+    <pre>
+        let app = new Vue({
+            el: '#app',
+            data: {
+                father_level: 2
+            },
+            components: {
+                'my-component': {
+                    template: '#t1',
+                    props: ['son_level']
+                }
+            }
+        });
+
+        let app2 = new Vue({
+            el: '#app2',
+            data: {
+                father_level: 2
+            },
+            components: {
+                'my-component2': {
+                props: ['son_level'],
+                render: function (createElement) {
+                        return createElement('h' + this.son_level, this.$slots.default);
+                    }
+                }
+            }
+        })
+    </pre>
+</fieldset>
+
+<fieldset>
+    <legend>render函数第一个参数</legend>
+    <div id="app3">
+        控制台查看此处会有一个空DIV标签
+        <my-component3-1></my-component3-1>
+        <my-component3-2></my-component3-2>
+        <my-component3-3></my-component3-3>
+    </div>
+    <xmp>
+        <div>
+            控制台查看此处会有一个空DIV标签
+            <my-component3-1></my-component3-1>
+            <my-component3-2></my-component3-2>
+            <my-component3-3></my-component3-3>
+        </div>
+    </xmp>
+    <pre>
+        let app3 = new Vue({
+            el:'#app3',
+            components:{
+                'my-component3-1':{
+                render:function (createElement) {
+                    return createElement('div')
+                    //string类型，创建html标签
+                }
+            },
+            'my-component3-2':{
+                render:function (createElement) {
+                    return createElement({template:'<div>第一个参数：Object一个含有数据选项的对象</div>'})
+                    //Object类型，返回一个含有数据选项的对象
+                }
+            },
+            'my-component3-3':{
+                render:function (createElement) {
+                    let domFun = function () {
+                        return { template:'<div>第一个参数：function方法返回含有数据选项的对象</div>' }
+                    };
+                        return createElement(domFun())
+                        //function类型，方法返回含有数据选项的对象
+                    }
+                }
+            }
+        })
+    </pre>
+</fieldset>
+
+<fieldset>
+    <legend>render函数第二个参数</legend>
+    <div id="app4">
+        <my-component4></my-component4>
+    </div>
+    <xmp>
+        <div>
+            <my-component4></my-component4>
+        </div>
+    </xmp>
+    <pre>
+        let app4 = new Vue({
+            el: '#app4',
+            components: {
+                'my-component4': {
+                render: function (createElement) {
+                        return createElement(
+                            {template: '<div>第二个参数例子</div>'},
+                            {
+                                'class': {//定义class相关
+                                    classname_1: true,
+                                    classname_2: false
+                                },
+                                style: {//定义style相关
+                                    color: 'red',
+                                    fontSize: '30px'
+                                },
+                                attrs: {//html相关特性
+                                    id: 'app4_1'
+                                },
+                                domProps: {//原生的Dom属性
+                                    innerHTML: '第二个参数例子1'
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        });
+    </pre>
+</fieldset>
+
+<fieldset>
+    <legend>render函数第三个参数</legend>
+    <div id="app5">
+        <my-component5-1></my-component5-1>
+        <my-component5-2></my-component5-2>
+    </div>
+    <xmp>
+        <div>
+            <my-component5-1></my-component5-1>
+            <my-component5-2></my-component5-2>
+        </div>
+    </xmp>
+    <pre>
+        let app5 = new Vue({
+            el:'#app5',
+            components:{
+                'my-component5-1':{
+                    render:function (createElement) {
+                        return createElement('div','第三个参数的string类型')
+                    }
+                },
+                'my-component5-2':{
+                    render:function (createElement) {
+                        return createElement('div',
+                            [
+                                createElement('h1','第三个参数的arry类型'),
+                                createElement('h6','第三个参数的arry类型')
+                            ]
+                        )
+                    }
+                }
+            }
+        })
+    </pre>
+</fieldset>
+
+<fieldset>
+    <legend>render函数中的slot</legend>
+    <div id="app6">
+        <my-component6>
+            <p>2</p>
+            <p>3</p>
+            <h3 slot="header">1</h3>
+            <h3 slot="footer">4</h3>
+        </my-component6>
+    </div>
+    <xmp>
+        <div>
+            <my-component6>
+                <p>2</p>
+                <p>3</p>
+                <h3 slot="header">1</h3>
+                <h3 slot="footer">4</h3>
+            </my-component6>
+        </div>
+    </xmp>
+    <pre>
+        let app6 =new Vue({
+            el:'#app6',
+                components:{
+                    'my-component6':{
+                        render:function (creatElement) {
+                            let header = this.$slots.header;
+                            let footer = this.$slots.footer;
+                            let body = this.$slots.default;
+                            return creatElement('div',
+                            [
+                                creatElement('header',header),
+                                creatElement('main',body),
+                                creatElement('footer',footer),
+                            ]
+                        )
+                    }
+                }
+            }
+        })
+    </pre>
+    <p>1、组件my-component6中，两个p标签和两个h3标签，可以和实际渲染的标签顺序对比是不同的</p>
+    <p>2、this.$slots.插槽名 通过声明变量header可拿到组件插槽名为herder的插槽，body = this.$slots.default保存原p标签内容</p>
+    <p>3、通过在render函数内实现组件my-component6内标签顺序的改变</p>
+</fieldset>
+
+<fieldset>
+    <legend>render函数中的props</legend>
+    <div id="app7">
+        <button @click="setpic">click</button>
+        <my-component7 :son_src="father_src"></my-component7>
+    </div>
+    <xmp>
+        <div>
+            <button @click="setpic">click</button>
+            <my-component7 :son_src="father_src"></my-component7>
+        </div>
+    </xmp>
+    <pre>
+        el: '#app7',
+        data: {
+            father_src: false
+        },
+        methods: {
+            setpic: function () {
+                this.father_src = !this.father_src
+            }
+        },
+        components: {
+            'my-component7': {
+                props: ['son_src'],
+                render: function (creatElement) {
+                    let img_src;
+                    if (this.son_src) {
+                        img_src = '001.jpg'
+                    } else {
+                        img_src = '002.jpg'
+                    }
+                    return creatElement('img',
+                        {
+                            style: {
+                                width: '600px',
+                                height: '400px'
+                            },
+                            attrs: {
+                                src: img_src
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    </pre>
+    <p>示例说明：</p>
+    <p>1、点击按钮切换两张不同照片显示</p>
+    <p>2、父实例的button绑定setpic方法，来改变father_src的值</p>
+    <p>3、父实通过自定义事件 :son_src="father_src" ，将改变后的值传递给子组件</p>
+    <p>4、子组件通过props（son_src）接收父实例的值后，在render函数内创建一个img标签（第一个参数）并设置img的src（第二个参数）</p>
+</fieldset>
+
+<fieldset>
+    <legend>render函数中的v-model</legend>
+    <div id="app8">
+        <!--<my-component8 :son_msg="father_msg" @input="setvalue"></my-component8>-->
+        <my-component8 :son_msg="father_msg" v-model="father_msg"></my-component8>
+        {{father_msg}}
+    </div>
+    <xmp>
+        <!--<my-component8 :son_msg="father_msg" @input="setvalue"></my-component8>-->
+        <!--通过v-bind和v-on实现-->
+
+        <my-component8 :son_msg="father_msg" v-model="father_msg"></my-component8>
+        <!--通过v-model实现-->
+    </xmp>
+    <pre>
+        el: '#app8',
+        data: {
+            father_msg: 'hi'
+        },
+        methods: {
+            // setvalue: function (value) {
+            //     this.father_msg = value
+            // }
+        },
+        components: {
+            'my-component8': {
+                props: ['son_msg'],
+                render: function (creatElement) {
+                    let that = this;
+                    return creatElement('input',
+                        {
+                            domProps: {
+                                value:that.son_msg
+                            },
+                            on:{
+                                input:function (event) {
+                                    that.$emit('input',event.target.value)
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    </pre>
+</fieldset>
+
+<fieldset>
+    <legend>在render函数中使用作用域插槽</legend>
+    <div id="app9">
+        <my-component9>
+            <template slot-scope="my_prop">
+                <p>{{my_prop.text}}</p>
+                <p>{{my_prop.msg}}</p>
+            </template>
+        </my-component9>
+    </div>
+    <xmp>
+        <div>
+            <my-component9>
+                <template slot-scope="my_prop">
+                    <p>{{my_prop.text}}</p>
+                    <p>{{my_prop.msg}}</p>
+                </template>
+            </my-component9>
+        </div>
+    </xmp>
+    <pre>
+        el: '#app9',
+        components: {
+            'my-component9': {
+                render: function (creatElement) {
+                    return creatElement('div',
+                        this.$scopedSlots.default({
+                            text: '作用域插槽在render函数中的使用',
+                            msg: '作用域插槽在render函数中的使用'
+                        })
+                    )
+                }
+            }
+        }
+    </pre>
+    <p>示例说明</p>
+    <p>1、render函数中使用作用域插槽，需通过this.$scopedSlots.default({......})来返回作用域插槽的数据</p>
+</fieldset>
+
+<fieldset>
+    <legend>函数化组件的应用</legend>
+    <div id="app10">
+        <my-component10 son_value="我是son"></my-component10>
+    </div>
+    <p>函数化组件使用较少</p>
+    <p>函数化组件提供了functional:true的布尔值选项，为true时组件内没有data 和 this </p>
+</fieldset>
+
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {
+            father_level: 2
+        },
+        components: {
+            'my-component': {
+                template: '#t1',
+                props: ['son_level']
+            }
+        }
+    });
+
+    let app2 = new Vue({
+        el: '#app2',
+        data: {
+            father_level: 2
+        },
+        components: {
+            'my-component2': {
+                props: ['son_level'],
+                render: function (createElement) {
+                    return createElement('h' + this.son_level, this.$slots.default);
+                }
+            }
+        }
+    });
+
+    let app3 = new Vue({
+        el: '#app3',
+        components: {
+            'my-component3-1': {
+                render: function (createElement) {
+                    return createElement('div')
+                }
+            },
+            'my-component3-2': {
+                render: function (createElement) {
+                    return createElement({template: '<div>第一个参数：Object一个含有数据选项的对象</div>'})
+                }
+            },
+            'my-component3-3': {
+                render: function (createElement) {
+                    let domFun = function () {
+                        return {
+                            template: '<div>第一个参数：function方法返回含有数据选项的对象</div>'
+                        }
+                    };
+                    return createElement(domFun())
+                }
+            }
+        }
+    });
+
+    let app4 = new Vue({
+        el: '#app4',
+        components: {
+            'my-component4': {
+                render: function (createElement) {
+                    return createElement(
+                        {template: '<div>第二个参数例子</div>'},
+                        {
+                            'class': {//定义class相关
+                                classname_1: true,
+                                classname_2: false
+                            },
+                            style: {//定义style相关
+                                color: 'red',
+                                fontSize: '30px'
+                            },
+                            attrs: {//html相关特性
+                                id: 'app4_1'
+                            },
+                            domProps: {//原生的Dom属性
+                                //innerHTML:'<div style="color:blue;font-size: 18px">我是蓝色</div>'
+                                innerHTML: '第二个参数例子1'
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    });
+
+    let app5 = new Vue({
+        el: '#app5',
+        components: {
+            'my-component5-1': {
+                render: function (createElement) {
+                    return createElement('div', '第三个参数的string类型')
+                }
+            },
+            'my-component5-2': {
+                render: function (createElement) {
+                    return createElement('div',
+                        [
+                            createElement('h1', '第三个参数的arry类型'),
+                            createElement('h6', '第三个参数的arry类型')
+                        ]
+                    )
+                }
+            }
+        }
+    });
+
+    let app6 = new Vue({
+        el: '#app6',
+        components: {
+            'my-component6': {
+                render: function (creatElement) {
+                    let header = this.$slots.header;
+                    let footer = this.$slots.footer;
+                    let body = this.$slots.default;
+
+                    return creatElement('div',
+                        [
+                            creatElement('header', header),
+                            creatElement('main', body),
+                            creatElement('footer', footer),
+                        ]
+                    )
+
+                }
+            }
+        }
+    });
+
+    let app7 = new Vue({
+        el: '#app7',
+        data: {
+            father_src: false
+        },
+        methods: {
+            setpic: function () {
+                this.father_src = !this.father_src
+            }
+        },
+        components: {
+            'my-component7': {
+                props: ['son_src'],
+                render: function (creatElement) {
+                    let img_src;
+                    if (this.son_src) {
+                        img_src = '001.jpg'
+                    } else {
+                        img_src = '002.jpg'
+                    }
+                    return creatElement('img',
+                        {
+                            style: {
+                                width: '600px',
+                                height: '400px'
+                            },
+                            attrs: {
+                                src: img_src
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    });
+
+    let app8 = new Vue({
+        el: '#app8',
+        data: {
+            father_msg: 'hi'
+        },
+        methods: {
+            // setvalue: function (value) {
+            //     this.father_msg = value
+            // }
+        },
+        components: {
+            'my-component8': {
+                props: ['son_msg'],
+                render: function (creatElement) {
+                    let that = this;
+                    return creatElement('input',
+                        {
+                            domProps: {
+                                value: that.son_msg
+                            },
+                            on: {
+                                input: function (event) {
+                                    that.$emit('input', event.target.value)
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    });
+
+    let app9 = new Vue({
+        el: '#app9',
+        components: {
+            'my-component9': {
+                render: function (creatElement) {
+                    return creatElement('div',
+                        this.$scopedSlots.default({
+                            text: '作用域插槽在render函数中的使用',
+                            msg: '作用域插槽在render函数中的使用'
+                        })
+                    )
+                }
+            }
+        }
+    });
+
+    let app10 = new Vue({
+        el:'#app10',
+        data:{
+            msg:'我是父组件内容'
+        },
+        components:{
+            'my-component10':{
+                functional:true,
+                // functional:true 表示当前vue实例无状态，无实例（即组件内部没有this 和data的概念）
+                props:['son_value'],
+                render:function (creatElement,context) {
+                    return creatElement('button',
+                        {
+                            on:{
+                                click:function () {
+                                    console.log(context);
+                                    console.log(context.parent);
+                                    console.log(context.parent.msg);
+                                }
+                            }
+                        },'我是按钮'
+                    )
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>

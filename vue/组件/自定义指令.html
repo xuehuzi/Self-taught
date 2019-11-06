@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>自定义指令</title>
+    <style>
+        li {
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    自动获取焦点：<input type="text" v-customize>
+    <br>
+    默认没有焦点：<input type="text">
+    <br>
+    <p v-test:parameter.a.b.c="parameter_value"></p>
+</div>
+<h3>自定义指令知识点</h3>
+<ul>
+    <p>说明</p>
+    <li>VUE自带指令不能满足开发全部要求时，需要用到自定义指令</li>
+    <li>和组件类似，都需要注册（全局 directive 和局部 directives）</li>
+    <xmp>
+        ...
+        //局部注册自定义指令（directives）
+        el: '#app',
+        directives: {
+            'customize': {
+                inserted: function (ele) {
+                    ele.focus();
+                }
+            }
+        }
+        ...
+        //全局注册自定义指令（directive）
+        Vue.directive('test', {
+            bind:function (el,binding,vnode) {
+            //....
+            }
+        })
+
+    </xmp>
+    <p>钩子函数</p>
+    <li>bind: 只调用一次，指令第一次绑定到元素时调用，此钩子函数可以定义一个在绑定时执行一次的初始化动作</li>
+    <ul>
+        <p>bind钩子函数参数</p>
+        <li>name：指令名，不包括 v- 前缀。</li>
+        <li>value：指令的绑定值，例如：v-my-directive="1 + 1" 中，绑定值为 2</li>
+        <li>oldValue：指令绑定的前一个值，仅在 update 和 componentUpdated 钩子中可用。无论值是否改变都可用。</li>
+        <li>expression：字符串形式的指令表达式。例如 v-my-directive="1 + 1" 中，表达式为 "1 + 1"。</li>
+        <li>arg：传给指令的参数，可选。例如 v-my-directive:foo 中，参数为 "foo"</li>
+        <li>modifiers：一个包含修饰符的对象。例如：v-my-directive.foo.bar 中，修饰符对象为 { foo: true, bar: true }。</li>
+    </ul>
+    <li>inserted: 被绑定元素插入父节点时调用（父节点存在即可调用，不必存在于document中）</li>
+    <li>update: 被绑定元素所在的模板更新时调用，而不论绑定值是否变化。通过比较更新前后的绑定值，可以忽略不必要的模板更新</li>
+    <li>componentUpdated：指令所在组件的 VNode 及其子 VNode 全部更新后调用。</li>
+    <li>unbind：只调用一次，指令与元素解绑时调用。</li>
+
+</ul>
+
+<script>
+    Vue.directive('test', {
+        bind:function (el,binding,vnode) {
+            let keys = [];
+            for(let key in vnode){
+                keys.push(key);
+            }
+            console.log(keys);
+            el.innerHTML =
+                '自定义指令name ' +'：'+ binding.name+'<br>'+
+                '自定义指令value' +'：'+ binding.value+'<br>'+
+                '字符串形式的指令表达式expression' + '：'+binding.expression+'<br>'+
+                '传给指令的参数arg' +'：'+ binding.arg+'<br>'+
+                '包含修饰符的对象modifiers' +'：'+ JSON.stringify(binding.modifiers)+'<br>'+
+                'vnode中的keys' +'：<br>'+ keys.join("<br>")+'<br>'
+        }
+    });
+    let app = new Vue({
+        el: '#app',
+        data:{
+            parameter_value:'自定义指令的value'
+        },
+        directives: {//局部注册自定义指令
+            'customize': {
+                inserted: function (ele) {
+                    ele.focus();
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>
