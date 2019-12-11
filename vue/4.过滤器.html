@@ -14,6 +14,43 @@
     <p>{{time | time_filter |numb_filter}}————2次过滤</p>
 </div>
 <script>
+    Vue.filter('numb_filter',function(value){
+        value = value.split('');
+                for (let i = 0; i < value.length; i++) {
+                    if (value[i] === '0') {
+                        value[i] = '零'
+                    }
+                    if (value[i] === '1') {
+                        value[i] = '一'
+                    }
+                    if (value[i] === '2') {
+                        value[i] = '二'
+                    }
+                    if (value[i] === '3') {
+                        value[i] = '三'
+                    }
+                    if (value[i] === '4') {
+                        value[i] = '四'
+                    }
+                    if (value[i] === '5') {
+                        value[i] = '五'
+                    }
+                    if (value[i] === '6') {
+                        value[i] = '六'
+                    }
+                    if (value[i] === '7') {
+                        value[i] = '七'
+                    }
+                    if (value[i] === '8') {
+                        value[i] = '八'
+                    }
+                    if (value[i] === '9') {
+                        value[i] = '九'
+                    }
+                }
+                return value.toString()
+    })
+
     let app = new Vue({
         el: '#app',
         data: {
@@ -48,42 +85,7 @@
                 let second = setdate(date.getSeconds());
                 return year + '年' + month + '月' + day + '日' + '星期' + arr[week] + hour + ':' + min + ':' + second
             },
-            numb_filter: function (value) {
-                value = value.split('');
-                for (let i = 0; i < value.length; i++) {
-                    if (value[i] === '0') {
-                        value[i] = '零'
-                    }
-                    if (value[i] === '1') {
-                        value[i] = '一'
-                    }
-                    if (value[i] === '2') {
-                        value[i] = '二'
-                    }
-                    if (value[i] === '3') {
-                        value[i] = '三'
-                    }
-                    if (value[i] === '4') {
-                        value[i] = '四'
-                    }
-                    if (value[i] === '5') {
-                        value[i] = '五'
-                    }
-                    if (value[i] === '6') {
-                        value[i] = '六'
-                    }
-                    if (value[i] === '7') {
-                        value[i] = '七'
-                    }
-                    if (value[i] === '8') {
-                        value[i] = '八'
-                    }
-                    if (value[i] === '9') {
-                        value[i] = '九'
-                    }
-                }
-                return value.toString()
-            }
+
         }
     })
     /*
@@ -98,6 +100,7 @@
 * 插值可以接受任意个过滤器（即可以串联），且过滤器可以接受参数。
 * 以过滤器time_filter1(value1，value2)为例其对应的函数 time_filter: function (value)
 * value是默认是第一个参数，value1，value2其实分别对应过滤器的第二个和第三个参数
+* 过滤器可以注册全局( Vue.filter('my-filter', function (value) {do soming}) )或局部( filters:{filter1:function(){}} )
 * */
 </script>
 </body>
