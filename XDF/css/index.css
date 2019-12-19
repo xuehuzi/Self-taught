@@ -1,0 +1,225 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    list-style: none;
+}
+
+.active {
+    color: #ee5400;
+}
+
+.main {
+    width: 640px;
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0 0 50px 0;
+}
+
+.header {
+    background: url("../img/banner.jpg") no-repeat;
+    min-height: 384px;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.header ul {
+    position: relative;
+    left: 90px;
+    top: 10px;
+}
+
+.header ul li {
+    margin-bottom: 10px;
+}
+
+.header li:nth-child(1) {
+    color: #e84200;
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.header li:nth-child(2) {
+    color: #4c2700;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.header li:nth-child(3) span {
+    padding: 4px 43px;
+    background: #ee5400;
+    border-radius: 2px;
+    color: white;
+}
+
+.header li:nth-child(4) {
+    color: #4c2700;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.part_2 div h1 {
+    font-size: 32px;
+    font-family: "Microsoft YaHei UI Light";
+    color: #3a3a3a;
+}
+
+.part_2_title > p {
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: bolder;
+}
+
+.part_2_listen {
+    margin: 25px 20px;
+    text-align: left;
+    line-height: 30px;
+}
+
+.part_2_introduce {
+    display: flex;
+    align-items: center;
+    line-height: 30px;
+    text-align: left;
+    padding: 0 10px;
+    margin: 48px 0 48px 0;
+}
+
+.part_2_introduce img {
+    margin-right: 10px;
+    border-radius: 5px;
+}
+
+.part_2_imgs ul {
+    display: flex;
+}
+
+.part_2_imgs ul li > span {
+    display: inline-block;
+}
+
+.btn_tuition {
+    background: #ee5400;
+    padding: 17px 223px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-top: 32px;
+    margin-bottom: 50px;
+    color: white;
+    font-size: 23px;
+}
+
+.dish_name {
+    font-size: 16px;
+    text-align: left;
+    line-height: 30px;
+    padding: 0 20px;
+}
+
+.dish_lists {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 40px 0 31px 5px;
+}
+
+.dish_lists li {
+    float: left;
+    margin: 0 5px 6px 0;
+}
+
+.dish_lists li span {
+    display: block;
+    background: #ee5400;
+    padding: 5px 0;
+    margin-top: -4px;
+}
+
+.virtue_lists {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding-left: 10px;
+}
+
+.virtue_lists li {
+    margin: 0 15px 11px 0;
+}
+
+.part_3_title {
+    margin: 40px 0 30px 0;
+}
+
+.part_3_title h1 {
+    font-size: 28px;
+}
+
+.part_3_title p {
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.btn_tuition_active {
+    padding: 17px 211px;
+}
+
+.part_4_title {
+    margin-bottom: 30px;
+}
+
+.part_4_title h1 {
+    font-size: 32px;
+}
+
+.part_4_title p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.part_4_lists img:last-child {
+    margin: 40px 0 40px 0;
+}
+
+.part_5 p {
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.selects, .part_5_from > label > input {
+    width: 100%;
+    padding: 14px 0;
+    border-radius: 5px;
+    margin-bottom: 18px;
+    background: none;
+    outline: none;
+    border: 1px solid #a0a0a0;
+    letter-spacing: 1px;
+    text-indent: 10px;
+    color: #757575;
+}
+
+
+
+.part_5_from > label > .submit {
+    background: #ff6600;
+    border: none;
+    color: white;
+    font-size: 18px;
+    padding: 20px 0;
+}
+
+.from_main {
+    padding: 0 20px;
+    margin-top: 20px;
+}
+
+.footer p {
+    color: #a0a0a0;
+}
